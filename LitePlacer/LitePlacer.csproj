@@ -162,6 +162,8 @@
   <ItemGroup>
     <Compile Include="CalibrationStatus.cs" />
     <Compile Include="DataGridDrag.cs" />
+    <Compile Include="Nozzle.cs" />
+    <Compile Include="NozzleChanger.cs" />
     <Compile Include="Properties\Settings1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -260,6 +262,11 @@
     <None Include="Properties\DataSources\AForgeFunction.datasource" />
     <None Include="Properties\DataSources\JobData.datasource" />
     <None Include="Properties\DataSources\NamedLocation2.datasource" />
+    <None Include="Properties\DataSources\Nozzle.datasource" />
+    <None Include="Properties\DataSources\Nozzle1.datasource" />
+    <None Include="Properties\DataSources\NozzleChanger.datasource" />
+    <None Include="Properties\DataSources\nozzleLocations.datasource" />
+    <None Include="Properties\DataSources\PartLocation.datasource" />
     <None Include="Properties\DataSources\PhysicalComponent.datasource" />
     <None Include="Properties\DataSources\TapeObj.datasource" />
     <None Include="Properties\Settings.settings">
@@ -307,6 +314,9 @@
       <Project>{26CD2CE7-FF63-4669-83B0-7D9C8F3408EE}</Project>
       <Name>Video.DirectShow</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

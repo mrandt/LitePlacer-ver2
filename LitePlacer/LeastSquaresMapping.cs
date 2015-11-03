@@ -14,7 +14,9 @@ namespace LitePlacer {
         readonly List<PartLocation> dest;
         private Matrix<double> Rotation, Offset, Scale;
 
+        double sourceCentroidX = 0, sourceCentroidY = 0, destCentroidX = 0, destCentroidY = 0;
         private double ScaleX, ScaleY, OffsetX, OffsetY, Rotation_;
+        public CNC cnc;
 
         public LeastSquaresMapping(List<PartLocation> from, List<PartLocation> to) { 
             source = from;
@@ -73,8 +75,6 @@ namespace LitePlacer {
         public void Recomputer3()
         {
             // calculate centroids
-            double sourceCentroidX = 0, sourceCentroidY = 0, destCentroidX = 0, destCentroidY = 0;
-
             int fiducialCount = 0;
 
             List<PartLocation> sourceFiducials = new List<PartLocation>();
@@ -124,14 +124,15 @@ namespace LitePlacer {
             for (int i=0; i<fiducialCount; i++) {
                 sourceFiducial = sourceFiducials.ElementAt(i);
                 destFiducial = destFiducials.ElementAt(i);
-
+                /*
                 sourceOffset.Add(Math.Sqrt(Math.Pow(sourceFiducial.X - 
                     sourceCentroidX, 2) + Math.Pow(sourceFiducial.Y -
                     sourceCentroidY, 2)));
                 destOffset.Add(Math.Sqrt(Math.Pow(destFiducial.X -
                     destCentroidX, 2) + Math.Pow(destFiducial.Y -
                     destCentroidY, 2)));
-
+                 */
+                /*
                 sourceRotation.Add(Math.Asin((sourceFiducial.Y - sourceCentroidY) /
                     sourceOffset[i]));
                 if ((sourceFiducial.X - sourceCentroidX) < 0) { 
@@ -143,10 +144,16 @@ namespace LitePlacer {
                 if ((destFiducial.X - destCentroidX) < 0) {
                     destRotation[i] = Math.PI - destRotation[i]; }
                 if (destRotation[i] < 0) { destRotation[i] += Math.PI * 2; }
+                */
+                sourceRotation.Add(Math.Atan2(sourceFiducial.Y - sourceCentroidY,
+                    sourceFiducial.X - sourceCentroidX));
+                destRotation.Add(Math.Atan2(destFiducial.Y - destCentroidY,
+                    destFiducial.X - destCentroidX));
+
 
                 rotationOffset.Add(destRotation[i] - sourceRotation[i]);
 
-                scale.Add(destOffset[i] / sourceOffset[i]);
+                //scale.Add(destOffset[i] / sourceOffset[i]);
 
                 Rotation_ += rotationOffset[i];
                 ScaleX += (destFiducial.X - destCentroidX) / (sourceFiducial.X - sourceCentroidX);
@@ -156,6 +163,17 @@ namespace LitePlacer {
             Rotation_ /= fiducialCount;
             ScaleX /= fiducialCount;
             ScaleY /= fiducialCount;
+
+            var p = new PartLocation();
+            double xFid, yFid;
+            foreach (PartLocation fiducial in sourceFiducials)
+            {
+                p.X = (fiducial.X - sourceCentroidX) * ScaleX;
+                p.Y = (fiducial.Y - sourceCentroidY) * ScaleY;
+                p.Rotate(Rotation_);
+                p.X += sourceCentroidX + OffsetX;
+                p.Y += sourceCentroidY + OffsetY;
+            }
         }
 
         public PartLocation Map2(PartLocation from)
@@ -164,10 +182,20 @@ namespace LitePlacer {
 
             var p = new PartLocation(from);
 
-            p.X = (from.X + OffsetX) * ScaleX;
-            // Why there's a -1 necessary here is beyond me but it works so
-            p.Y = (from.Y + OffsetY) * ScaleY - 1;
+            //(Rotation * (x - SourceCentroid)) + Offset + SourceCentroid;
+/*
+            p.X = (from.X + OffsetX) * ScaleX; // -0.5;
+            p.Y = (from.Y + OffsetY) * ScaleY; // -1;
             p.Rotate(Rotation_);
+*/
+            p.X = (from.X - sourceCentroidX) * ScaleX;
+            p.Y = (from.Y - sourceCentroidY) * ScaleY;
+            p.Rotate(Rotation_);
+            p.X += sourceCentroidX + OffsetX;
+            p.Y += sourceCentroidY + OffsetY;
+
+            // double check this
+            p.A = from.A + Angle;
 
             return p;
         }

@@ -28,6 +28,8 @@ namespace LitePlacer {
         CAD Cad;
         private LocationManager Locations;
 
+        NozzleChanger nozzleChanger;
+
 
         private bool isHomed ;
         public bool IsHomed { get { return isHomed; } 
@@ -150,6 +152,13 @@ namespace LitePlacer {
             Tapes = new TapesClass(Tapes_dataGridView, Needle, Cnc, this);
             Cad = new CAD(this);
             Locations = new LocationManager();
+
+            nozzleChanger = new NozzleChanger();
+            nozzleChanger.InitializeObject(dataGridNozzes, datagridLoadSequence, Needle, Cnc, this);
+            //listNozzles.DataSource = nozzleChanger.nozzles;
+            nozzleChanger.ReLoad();
+            dataGridNozzes.DataSource = nozzleChanger.nozzles;
+            textBoxNozzleSpeed.Text = nozzleChanger.Speed;
 
             Global.Instance.cnc = Cnc;
             Global.Instance.needle = Needle;
@@ -914,7 +923,6 @@ namespace LitePlacer {
             Cnc.ZGuardOff();
             cameraView.SetDownCameraDefaults();
             switch (SetNeedleOffset_stage) {
-
                 case 0:
                     SetNeedleOffset_stage = 1;
                     Offset2Method_button.Text = "Next";
@@ -927,7 +935,7 @@ namespace LitePlacer {
                 case 1:
                     SetNeedleOffset_stage = 2;
                     NeedleOffsetMarkY = Cnc.CurrentY;
-                    NeedleOffsetMarkX = Cnc.TrueX;
+                    NeedleOffsetMarkX = Cnc.CurrentX;
                     NeedleOffsetMarkZ = Cnc.CurrentZ;
                     Cnc.Zup();
                     Cnc.CNC_XY(Cnc.CurrentX - 75.0, Cnc.CurrentY - 25.0);
@@ -947,7 +955,7 @@ namespace LitePlacer {
                         Offset2Method_button.BackColor = ChangeNeedle_button.BackColor;
                         break;
                     }
-                    if (Properties.Settings.Default.zTravelTotalZ != 0 && NeedleOffsetMarkZ != 0)
+/*                    if (Properties.Settings.Default.zTravelTotalZ != 0 && Math.Round(NeedleOffsetMarkZ,5) != 0)
                     {
                         Properties.Settings.Default.DownCam_NeedleOffsetX = NeedleOffsetMarkX - Cnc.TrueX
                             + (Properties.Settings.Default.zTravelXCompensation /
@@ -957,17 +965,24 @@ namespace LitePlacer {
                             Properties.Settings.Default.zTravelTotalZ * NeedleOffsetMarkZ) + CorrectedY;
                     }
                     else
-                    {
-                        Properties.Settings.Default.DownCam_NeedleOffsetX = NeedleOffsetMarkX - Cnc.TrueX
-                             + CorrectedX;
-                        Properties.Settings.Default.DownCam_NeedleOffsetY = NeedleOffsetMarkY - Cnc.CurrentY
-                             + CorrectedY;
-                    }
+                    {*/
+                    double offsetX, offsetY;
+                    offsetX = NeedleOffsetMarkX - Cnc.CurrentX + CorrectedX;
+                    offsetY = NeedleOffsetMarkY - Cnc.CurrentY + CorrectedY;
+
+                    Properties.Settings.Default.DownCam_NeedleOffsetX = offsetX;
+                    Properties.Settings.Default.DownCam_NeedleOffsetY = offsetY;
+  //                  }
                     Properties.Settings.Default.Save();
                     NeedleOffsetX_textBox.Text = Properties.Settings.Default.DownCam_NeedleOffsetX.ToString("0.00", CultureInfo.InvariantCulture);
                     NeedleOffsetY_textBox.Text = Properties.Settings.Default.DownCam_NeedleOffsetY.ToString("0.00", CultureInfo.InvariantCulture);
-                    instructions_label.Text = "Ensure that the 'Up Camera' location, focus height, and\nNeedle video filters are set such that the needle is\n in the camera's field of view and you can detect a circle. Select Next when these conditions are met";
+                    //instructions_label.Text = "Ensure that the 'Up Camera' location, focus height, and\nNeedle video filters are set such that the needle is\n in the camera's field of view and you can detect a circle. Select Next when these conditions are met";
                     Cnc.Zup();
+                    SetNeedleOffset_stage = 0;
+                    instructions_label.Visible = false;
+                    instructions_label.Text = "   ";
+                    Offset2Method_button.Text = "Camera Offset";
+                    Offset2Method_button.BackColor = ChangeNeedle_button.BackColor;
                     break;
 
                 case 3:
@@ -2570,12 +2585,14 @@ namespace LitePlacer {
             // Pick it up:
             if (!tape.IsPickupZSet) {
                 if (!Needle.ProbeDown()) return false;
+                ShowMessageBox("this is gunna be wrooong", "worng", MessageBoxButtons.OK);
                 tape.PickupZ = Cnc.CurrentZ - Properties.Settings.Default.General_ProbingBackOff;
                 DisplayText("PickUpPart_m(): Probing Z= " + Cnc.CurrentZ);
             } else {
                 double Z = tape.PickupZ; //not sure why the .5 is there - increased pressure?
                 DisplayText("PickUpPart_m(): Part pickup, Z" + Z);
-                if (!Cnc.CNC_Z(Z)) return false;
+                //if (!Cnc.CNC_Z(Z)) return false;
+                if (!Cnc.CNC_XYZA(Cnc.CurrentX, Cnc.CurrentY, Cnc.CurrentA, Z)) return false;
             }
 
             VacuumOn();
@@ -2831,6 +2848,7 @@ namespace LitePlacer {
                 measuredLocations.Add(t.machine);
             }
             LeastSquaresMapping lsm = new LeastSquaresMapping(nominalLocations, measuredLocations);
+            lsm.cnc = Cnc;
             PCBOffset_label.Text = lsm.ToString();
             var error = lsm.RMSError();
             //    if (error > 1) { //some arbitrary thershold
@@ -3274,8 +3292,17 @@ namespace LitePlacer {
             if (row < 0) return;
             var name = (string)locations_dataGridView.Rows[row].Cells[0].Value;
             var p = Locations.GetLocation(name);
-            p.X = Cnc.CurrentX;
-            p.Y = Cnc.CurrentY;
+            if (name == "Up Camera")
+            {
+                nozzleLocations nz = Cnc.GetCurrentPositionRelativeToZ();
+                p.X = nz.X;
+                p.Y = nz.Y;
+            }
+            else
+            {
+                p.X = Cnc.CurrentX;
+                p.Y = Cnc.CurrentY;
+            }
         }
 
         // do not allow key location names to be edited
@@ -3796,8 +3823,8 @@ namespace LitePlacer {
                 ShowSimpleMessageBox("Needle not calibrated");
                 return false;
             }
-            loc.X -= CorrectedX;
-            loc.Y -= CorrectedY;
+            //loc.X += CorrectedX;
+            //loc.Y += CorrectedY;
             //loc.X -= loc.Y * CNC.SquareCorrection;
             return Needle.Move_m(loc);
         }
@@ -3827,7 +3854,7 @@ namespace LitePlacer {
                         return;
                     }
 
-                    HeightOffset_StartLocation.X = Cnc.TrueX;
+                    HeightOffset_StartLocation.X = Cnc.CurrentX;
                     HeightOffset_StartLocation.Y = Cnc.CurrentY;
 
                     Cnc.CNC_Z(Properties.Settings.Default.ZDistanceToTable);
@@ -3835,21 +3862,24 @@ namespace LitePlacer {
                     
                     Cnc.ZGuardOff();
                     
-                    instructions_label.Text = "Jog camera back to the original point";
+                    instructions_label.Text = "Jog the needle to the original point";
                     HeightOffset_stage++;
                     break;
                 case 2:
                     Cnc.ZGuardOn();
 
+
+                    // this would only be needed if the user changes the needle angle during the Z-Table move
+                    /*
                     double CorrectedX = 0, CorrectedY = 0;
                     if (!Needle.CorrectedPosition_m(Cnc.CurrentA, out CorrectedX, out CorrectedY))
                     {
                         ShowSimpleMessageBox("Needle not calibrated");
                         return;
                     }
-
-                    double xDiff = Cnc.TrueX - HeightOffset_StartLocation.X;
-                    double yDiff = Cnc.CurrentY - HeightOffset_StartLocation.Y;
+                    */
+                    double xDiff = Cnc.CurrentX - HeightOffset_StartLocation.X;// + CorrectedX;
+                    double yDiff = Cnc.CurrentY - HeightOffset_StartLocation.Y;// + CorrectedY;
 
                     Properties.Settings.Default.zTravelXCompensation = xDiff;
                     Properties.Settings.Default.zTravelYCompensation = yDiff;
@@ -4141,7 +4171,6 @@ namespace LitePlacer {
                 {
                     case DialogResult.Retry:
                         goto retrySkew;
-                        break;
                     case DialogResult.Ignore:
                         goto ignoreSkewError;
                 }
@@ -4283,7 +4312,6 @@ retryAll:
                     
         private void calibrateAll(Button sender)
         {
-            PartLocation loc = null;
             switch (calibrateAllStage)
             {
                 case 0:
@@ -4384,7 +4412,18 @@ reinitialize:
                 Cnc.CNC_XY(component.machine);
                 if (cameraView.ShowMessageBox("Please verify component position for component " + component.Designator +
                     ", is it correct?", "verification",
-                    MessageBoxButtons.YesNo) == DialogResult.No) { goto reinitialize; }
+                    MessageBoxButtons.YesNo) == DialogResult.No) {
+
+                        if (cameraView.ShowMessageBox("You want to retry measuring board?", "Retry",
+                            MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
+                            goto reinitialize;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                }
             }
         }
 
@@ -4407,6 +4446,79 @@ reinitialize:
         private void button8_Click(object sender, EventArgs e)
         {
             verifyPlacements_m();
+        }
+
+        private void datagridLoadSequence_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            
+        }
+
+        private void dataGridNozzes_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridNozzes.SelectedCells.Count == 0) { return;  }
+
+            Nozzle nozzle = (Nozzle)dataGridNozzes.SelectedCells[0].OwningRow.DataBoundItem;
+            if (nozzle == null) { return; }
+
+            datagridLoadSequence.DataSource = nozzle.loadSequence;
+        }
+
+        private void dataGridNozzes_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (nozzleChanger == null) return;
+            nozzleChanger.NozzleChanger_dataChanged(null, null);
+        }
+
+        private void dataGridNozzes_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void buttonLoadNozzle_Click(object sender, EventArgs e)
+        {
+            nozzleChanger.LoadNozzle();
+        }
+
+        private void buttonUnloadNozzle_Click(object sender, EventArgs e)
+        {
+            nozzleChanger.UnloadNozzle();
+        }
+
+        private void NozzleChanger_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void xvm_maskedTextBox_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        {
+
+        }
+
+        private void textBoxNozzleSpeed_TextChanged(object sender, EventArgs e)
+        {
+            nozzleChanger.Speed = textBoxNozzleSpeed.Text;
+        }
+
+        private void buttonNzLoadFromCamera_Click(object sender, EventArgs e)
+        {
+            var loc = Cnc.XYALocation;
+            SetNeedleOffset_stage = 3;
+
+            double CorrectedX, CorrectedY;
+            if (!Needle.CorrectedPosition_m(Cnc.CurrentA, out CorrectedX, out CorrectedY))
+            {
+                ShowSimpleMessageBox("Needle not calibrated");
+                return;
+            }
+            loc.X -= CorrectedX;
+            loc.Y -= CorrectedY;
+
+            nozzleChanger.SetPosition(loc);
+        }
+
+        private void buttonNzLoadFromNeedle_Click(object sender, EventArgs e)
+        {
+            nozzleChanger.SetPosition();
         }
 
     }	// end of: 	public partial class FormMain : Form

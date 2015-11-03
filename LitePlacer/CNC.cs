@@ -644,6 +644,20 @@ namespace LitePlacer {
             if (Z != null) { setCurrZ((double)Z); }
         }
 
+        public nozzleLocations GetCurrentPositionRelativeToZ() {
+            nozzleLocations r = new nozzleLocations();
+            
+            r.X = CurrentX - (Properties.Settings.Default.zTravelXCompensation / Properties.Settings.Default.zTravelTotalZ * CurrentZ);
+            r.Y = CurrentY - (Properties.Settings.Default.zTravelYCompensation / Properties.Settings.Default.zTravelTotalZ * CurrentZ);
+            r.Z = CurrentZ;
+
+            return r;
+        }
+
+        public double TranslateToTrueX(double X, double Y)
+        {
+            return X - Y * SquareCorrection;
+        } 
 
     }  // end Class CNC
 
