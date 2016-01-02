@@ -430,6 +430,9 @@ namespace LitePlacer {
                 }
             }
             MainForm.ShowSimpleMessageBox("Couldn't Find corresponding part");
+        
+        
+        
         }
 
         public void TakePhotoOfPartAtCurrentLocation(TapeObj t) {
@@ -571,7 +574,7 @@ namespace LitePlacer {
 
         public bool SetAsFeeder(TapeObj t)
         {
-            string input = Microsoft.VisualBasic.Interaction.InputBox("Number of components on reel", "Reel size", "Default", -1, -1);
+            string input = Microsoft.VisualBasic.Interaction.InputBox("Number of components on reel", "Reel size", "5000", -1, -1);
             int reelSize = int.Parse(input);
 
             if (reelSize < 1) { return false; };

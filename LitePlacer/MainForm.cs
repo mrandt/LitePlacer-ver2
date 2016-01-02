@@ -47,7 +47,11 @@ namespace LitePlacer {
 
         public bool AbortPlacement {
             get { return Cnc.AbortPlacement; }
-            set { Cnc.AbortPlacement = value; }
+            set { 
+                Cnc.AbortPlacement = value;
+                AbortPlacement_button.BackColor = (AbortPlacement) ? Color.Orange : Color.Red;
+                AbortPlacement_button.Text = (AbortPlacement) ? "Restart" : "Stop";            
+            }
         }
 
         // =================================================================================
@@ -153,13 +157,6 @@ namespace LitePlacer {
             Cad = new CAD(this);
             Locations = new LocationManager();
 
-            nozzleChanger = new NozzleChanger();
-            nozzleChanger.InitializeObject(dataGridNozzes, datagridLoadSequence, Needle, Cnc, this);
-            //listNozzles.DataSource = nozzleChanger.nozzles;
-            nozzleChanger.ReLoad();
-            dataGridNozzes.DataSource = nozzleChanger.nozzles;
-            textBoxNozzleSpeed.Text = nozzleChanger.Speed;
-
             Global.Instance.cnc = Cnc;
             Global.Instance.needle = Needle;
             Global.Instance.mainForm = this;
@@ -173,6 +170,18 @@ namespace LitePlacer {
             cameraView.SetUpCameraDefaults();
             cameraView.downClickDelegate = DownClickDelegate;
             cameraView.upClickDelegate = UpClickDelegate;
+
+            nozzleChanger = new NozzleChanger();
+            nozzleChanger.InitializeObject(dataGridNozzes, datagridLoadSequence, Needle, Cnc, this);
+            //listNozzles.DataSource = nozzleChanger.nozzles;
+            nozzleChanger.ReLoad();
+            dataGridNozzes.DataSource = nozzleChanger.nozzles;
+            textBoxNozzleSpeed.Text = nozzleChanger.Speed;
+
+            (dataGridNozzes.Columns[2] as DataGridViewComboBoxColumn).DataSource =
+                new BindingSource { DataSource = cameraView.upSet.GetNames() };
+            Needle.nozzleChanger = nozzleChanger;
+            nozzleChangerEnabled.Checked = nozzleChanger.Enabled;
 
             //setup location jumps
             UpdateGoToPulldownMenu();
@@ -202,7 +211,7 @@ namespace LitePlacer {
 
             //jobs table
             JobData_GridView.DataSource = Cad.JobData;
-            methodDataGridViewComboBoxColumn.DataSource = new[] {"?", "Place", "LoosePlace", "Change Needle", "Recalibrate", "Ignore", "Pause", "Fiducial", "Place With UpCam"};
+            methodDataGridViewComboBoxColumn.DataSource = new[] {"?", "Place", "LoosePlace", "Change Needle", "Recalibrate", "Ignore", "Pause", "Fiducial", "Place With UpCam", "Change nozzle"};
             // apply changes to multiple placement types at once
             JobData_GridView.CellValueChanged += (o, e) => {
                 if (e.ColumnIndex != 3) return;
@@ -2160,6 +2169,7 @@ namespace LitePlacer {
         private bool LoadJobData_m(string filename) {
             try {
                 Cad.JobData.Clear();
+                JobData_GridView.Rows.Clear();
                 Cad.JobData.AddRange(Global.DeSerialization<SortableBindingList<JobData>>(filename));
                 JobData_GridView.DataSource = Cad.JobData;
             } catch (Exception ex) {
@@ -2210,15 +2220,59 @@ namespace LitePlacer {
         // JobData editing
         // =================================================================================
         private void JobData_GridView_CellClick(object sender, DataGridViewCellEventArgs e) {
+  
+
             if (JobData_GridView.CurrentCell.ColumnIndex == 4) {
                 // For method parameter, show the tape selection form if method is "place" 
                 int row = JobData_GridView.CurrentCell.RowIndex;
                 var x = JobData_GridView.Rows[row].Cells[3].Value;
+
+                if (x != null && x.Equals("Change nozzle"))
+                {
+                    if (!(JobData_GridView.Rows[row].Cells[4].GetType() == typeof(DataGridViewComboBoxCell)))
+                    {
+                        DataGridViewComboBoxCell ComboBoxCell = new DataGridViewComboBoxCell();
+                        foreach (Nozzle nozzle in nozzleChanger.nozzles)
+                        {
+                            ComboBoxCell.Items.Add(nozzle.Id);
+                        }
+                        JobData_GridView.Rows[row].Cells[4] = ComboBoxCell;
+                        JobData_GridView.Rows[row].Cells[4].Value = ComboBoxCell.Items[0].ToString();
+                        JobData_GridView.Rows[row].Cells[4].Selected = true;
+
+                        /*JobData_GridView.Refresh();
+                        JobData_GridView.RefreshEdit();
+                        Update_GridView(JobData_GridView);
+                        jobDataBindingSource.ResetBindings(true);
+                        JobData_GridView.UpdateCellValue(4, row);*/
+                        //RunJob_tabPage.Refresh();
+                        //this.Refresh();
+                        smallDebugWindow.Focus();
+                        JobData_GridView.Focus();
+                    }
+                    return;
+                }
+
+                if (!(JobData_GridView.Rows[row].Cells[4].GetType() == typeof(DataGridViewTextBoxCell)))
+                {
+                    DataGridViewTextBoxCell TextBoxCell = new DataGridViewTextBoxCell();
+                    JobData_GridView.Rows[row].Cells[4] = TextBoxCell;
+                   /* JobData_GridView.Refresh();
+                    JobData_GridView.RefreshEdit();
+                    Update_GridView(JobData_GridView);
+                    jobDataBindingSource.ResetBindings(true);
+                    JobData_GridView.UpdateCellValue(4, row);*/
+                    smallDebugWindow.Focus();
+                    JobData_GridView.Focus();
+                }
+                
                 if (x != null && x.Equals("Place")) {
                     JobData_GridView.Rows[row].Cells[4].Value = SelectTape("Select tape for ");
                     //+ JobData_GridView.Rows[row].Cells["ComponentType"].Value.ToString());
                     Update_GridView(JobData_GridView);
                 }
+                JobData_GridView.Refresh();
+                JobData_GridView.RefreshEdit();
             }
         }
 
@@ -2243,7 +2297,7 @@ namespace LitePlacer {
         // Several rows are selected at Job data:
 
         private void PlaceThese_button_Click(object sender, EventArgs e) {
-            int selectedCount = JobData_GridView.SelectedCells.Count;
+            int selectedCount = JobData_GridView.SelectedRows.Count;
             if (selectedCount == 0) {
                 CleanupPlacement(false);
                 ShowSimpleMessageBox("Nothing selected");
@@ -2255,13 +2309,30 @@ namespace LitePlacer {
                 return;
             }
 
-
             List<PhysicalComponent> toPlace = new List<PhysicalComponent>();
             for (int i = 0; i < selectedCount; i++) {
-                var job = (JobData)JobData_GridView.SelectedCells[i].OwningRow.DataBoundItem;
-                foreach (var component in job.GetComponents()) {
-                    component.JobData = job;
-                    if (!toPlace.Contains(component)) toPlace.Add(component);
+                for (int j = 0; j < selectedCount; j++) {
+                    if (JobData_GridView.SelectedRows[j].Index == i) { 
+                        var job = (JobData)JobData_GridView.SelectedRows[j].DataBoundItem;
+                        if (job.Method == "Change nozzle" || job.Method == "Recalibrate")
+                        {
+                            PhysicalComponent x = new PhysicalComponent();
+                            x.Method = job.Method;
+                            x.MethodParameters = job.MethodParameters;
+                            x.JobData = job;
+
+                            toPlace.Add(x);
+                        }
+                        else
+                        {
+                            foreach (var component in job.GetComponents())
+                            {
+                                component.JobData = job;
+                                if (!toPlace.Contains(component)) toPlace.Add(component);
+                            }
+                        }
+                        break;
+                    }
                 }
             }
 
@@ -2394,6 +2465,8 @@ namespace LitePlacer {
             
 
             if ((comp.Method == "LoosePart") || (comp.Method == "Place") || (comp.Method == "Place Fast")) {
+                if (!Needle.Calibrated && !CalibrateNeedle_m()) return false;
+            
                 PlacedComponent_label.Text = comp.Designator;
                 PlacedComponent_label.Update();
                 PlacedValue_label.Text = comp.TypePlusFootprint;
@@ -2462,6 +2535,10 @@ namespace LitePlacer {
                 case "Fiducials":
                     return true;
 
+                case "Change nozzle":
+                    nozzleChanger.LoadNozzle(comp.MethodParameters);
+                    break;
+
                 default:
                     ShowSimpleMessageBox("No way to handle method " + comp.Method);
                     return false;
@@ -2527,7 +2604,7 @@ namespace LitePlacer {
                 return false;
             }
 
-            if (!Needle.Calibrated && !CalibrateNeedle_m()) return false;
+            //if (!Needle.Calibrated && !CalibrateNeedle_m()) return false;
             if (!BuildMachineCoordinateData_m()) return false;
 
 
@@ -2609,7 +2686,7 @@ namespace LitePlacer {
                     DisplayText("Pressure sensor detected failed pickup", Color.Red);
                     VacuumOff();
                     PumpOff();
-                    tape.PickupZ = -1; //reset pickupZ 
+                    //tape.PickupZ = -1; //reset pickupZ 
                     return false;
                 }
             }
@@ -3694,8 +3771,8 @@ namespace LitePlacer {
         }
 
         private void SerialMonitor_richTextBox_TextChanged(object sender, EventArgs e) {
-            SerialMonitor_richTextBox.Text = "";
-            return;
+            //SerialMonitor_richTextBox.Text = "";
+            //return;
             smallDebugWindow.Text = ((RichTextBox)sender).Text;
             smallDebugWindow.SelectionStart = smallDebugWindow.Text.Length;
             smallDebugWindow.ScrollToCaret();
@@ -4486,7 +4563,7 @@ reinitialize:
 
         private void NozzleChanger_Click(object sender, EventArgs e)
         {
-
+            nozzleChanger.Enabled = nozzleChangerEnabled.Checked;
         }
 
         private void xvm_maskedTextBox_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
@@ -4519,6 +4596,90 @@ reinitialize:
         private void buttonNzLoadFromNeedle_Click(object sender, EventArgs e)
         {
             nozzleChanger.SetPosition();
+        }
+
+        private void nozzleChangerEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            nozzleChanger.Enabled = nozzleChangerEnabled.Checked;
+        }
+
+        private void JobData_GridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void rowToTop_Button_Click(object sender, EventArgs e)
+        {
+            /*            List<PhysicalComponent> toPlace = new List<PhysicalComponent>();
+                        for (int i = 0; i < selectedCount; i++)
+                        {
+                
+                            foreach (var component in job.GetComponents())
+                            {
+                                component.JobData = job;
+                                if (!toPlace.Contains(component)) toPlace.Add(component);
+                            }
+                            var t = job.ComponentList[row.Index];
+                            job.ComponentList.Remove(row.Index);
+                            job.ComponentList.Insert(job.ComponentList.Count, t);
+                        }*/
+
+            //            var job = (JobData)JobData_GridView.SelectedCells[i].OwningRow.DataBoundItem;
+            //JobData_GridView.SelectedCells[0].ow
+            //            foreach (DataGridViewRow row in JobData_GridView.SelectedCells.OwningRow.DataBoundItem;)
+            for (int i = 0; i < JobData_GridView.SelectedCells.Count; i++)
+            {
+                var row = JobData_GridView.SelectedCells[i].OwningRow.Index;
+                var j = Cad.JobData[row];
+                Cad.JobData.Remove(j);
+                Cad.JobData.Insert(0, j);
+
+                //JobData_GridView.Rows.Remove(row);
+                //JobData_GridView.Rows.Insert(0, row);
+                //JobData_GridView
+            }
+            JobData_GridView.Update();
+
+        }
+
+        bool testingADC;
+        public void testADC()
+        {
+            int value;
+            do
+            {
+                value = Cnc.GetADC();
+                DisplayText("ADC Value " + value.ToString());
+                Thread.Sleep(500);
+                Application.DoEvents();
+            } while (testingADC);
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (!testingADC)
+            {
+                testingADC = true;
+                Thread t = new Thread(() => testADC());
+                t.IsBackground = true;
+                t.Start();
+            }
+            else
+            {
+                testingADC = false;
+            }
+        }
+
+        private void rowToBottom_button_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < JobData_GridView.SelectedCells.Count; i++)
+            {
+                var row = JobData_GridView.SelectedCells[i].OwningRow.Index;
+                var j = Cad.JobData[row];
+                Cad.JobData.Remove(j);
+                Cad.JobData.Add(j);
+            }
+            JobData_GridView.Update();
         }
 
     }	// end of: 	public partial class FormMain : Form

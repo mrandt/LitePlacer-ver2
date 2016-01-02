@@ -21,6 +21,10 @@ namespace LitePlacer
         public bool IsLoaded { get { return isloaded; } 
             set { isloaded = value; Notify("IS loaded"); } }
 
+        private string nozzleFilter = "";
+        public string NozzleFilter { get { return nozzleFilter; } set { nozzleFilter = value; Notify("Nozzle filter"); } }
+
+
         private DataGridView Grid;
 
         public event EventHandler dataChanged/* = new EventHandler(DataChanged)*/;

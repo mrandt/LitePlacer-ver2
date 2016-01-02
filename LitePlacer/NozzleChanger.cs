@@ -29,6 +29,10 @@ namespace LitePlacer
         [System.Xml.Serialization.XmlElement("Speed")]
         private string speed = "2000";
         public string Speed { get { return speed; } set { speed = value; Notify("IS loaded"); } }
+
+        [System.Xml.Serialization.XmlElement("Enabled")]
+        private bool enabled = false;
+        public bool Enabled { get { return enabled; } set { enabled = value; Notify("Enabled"); } }
         
         public SortableBindingList<Nozzle> nozzles = new SortableBindingList<Nozzle>();
         private const string NozzlesSaveName = "Nozzles.xml";
@@ -205,24 +209,53 @@ namespace LitePlacer
             nozzle.IsLoaded = false;
         }
 
-        public void LoadNozzle()
+        public Nozzle GetLoadedNozzle()
         {
-            Nozzle selected = (Nozzle)Grid.CurrentCell.OwningRow.DataBoundItem;
-            if (selected.IsLoaded) return;
             foreach (Nozzle nozzle in nozzles)
             {
-                if (nozzle.IsLoaded) {
-                    UnloadNozzle(nozzle);
+                if (nozzle.IsLoaded)
+                {
+                    return nozzle;
                     break;
                 }
             }
+            return null;
+        }
+
+        public void LoadNozzle(string nozzleID)
+        {
+            foreach (Nozzle nozzle in nozzles)
+            {
+                if (nozzle.Id == nozzleID)
+                {
+                    LoadNozzle(nozzle);
+                }
+            }
+        }
+
+        public void LoadNozzle()
+        {
+            Nozzle selected = (Nozzle)Grid.CurrentCell.OwningRow.DataBoundItem;
+            LoadNozzle(selected);
+        }
+
+        public void LoadNozzle(Nozzle nozzle)
+        {
+            if (nozzle.IsLoaded) return;
+
+            Nozzle loadedNozzle = GetLoadedNozzle();
+            if (loadedNozzle != null)
+            {
+                UnloadNozzle(loadedNozzle);
+            }
+
             Cnc.Zup();
             Cnc.ZGuardOff();//("{\"gc\":\""
             string strSpeed = "G1 F" + speed;
             string strSend;
             //Cnc.RawWrite("{\"gc\":\"G1 F " + speed + " X"  ((double)X).ToString(CultureInfo.InvariantCulture);"\"}");
             bool first = true;
-            foreach (nozzleLocations NozzleLocation in selected.loadSequence)
+            foreach (nozzleLocations NozzleLocation in nozzle.loadSequence)
             {
                 strSend = "{\"gc\":\"";
                 if (first) { strSend = strSend + " G0 "; first = false; } else { strSend = strSend + strSpeed; }
@@ -236,7 +269,7 @@ namespace LitePlacer
             Cnc.ZGuardOn();
             Cnc.Zup();
 
-            selected.IsLoaded = true;
+            nozzle.IsLoaded = true;
         }
 
         public void SetPosition(PartLocation loc)

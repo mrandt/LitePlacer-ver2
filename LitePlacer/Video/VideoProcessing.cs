@@ -206,6 +206,7 @@ namespace LitePlacer {
             foreach (var x in FunctionList.Where(x => x.Method == AForgeMethod.Zoom).Select(x => x.parameter_double).ToList()) {
                 zoom *= x;
             }
+            if (zoom == 0) { zoom = 1.0; }
             return zoom; 
         }
 

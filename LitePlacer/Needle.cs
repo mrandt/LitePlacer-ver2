@@ -15,6 +15,7 @@ namespace LitePlacer {
         public List<NeedlePoint> CalibrationPoints = new List<NeedlePoint>();
 
         private static FormMain MainForm;
+        public NozzleChanger nozzleChanger;
 
         public bool NeedleAlwaysCalibrated = false;
 
@@ -186,7 +187,15 @@ namespace LitePlacer {
 
             //setup camera
             MainForm.cameraView.UpCameraReset();
-            MainForm.cameraView.SetUpCameraFunctionSet("Needle");
+            if (nozzleChanger.Enabled == false)
+            {
+                MainForm.cameraView.SetUpCameraFunctionSet("Needle");
+            }
+            else
+            {
+                Nozzle nozzle = nozzleChanger.GetLoadedNozzle();
+                if (nozzle != null) { MainForm.cameraView.SetUpCameraFunctionSet(nozzle.NozzleFilter); }
+            }
             MainForm.cameraView.downSettings.FindCircles = true;
 
             // we are already @ upcamera position

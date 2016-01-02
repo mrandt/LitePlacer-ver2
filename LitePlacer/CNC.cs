@@ -206,6 +206,7 @@ namespace LitePlacer {
                 // Close();
                 MainForm.UpdateCncConnectionStatus();
                 MainForm.ShowSimpleMessageBox("TinyG Error : " + o["er"]["msg"]);
+                MainForm.AbortPlacement = true;
                 return;
             }
 
@@ -373,8 +374,14 @@ namespace LitePlacer {
         //-------- ADC ----------------
         public int _ADC_RESULT;
         public int GetADC() {
-            if (!CNC_Write_m("{\"adc0\":\"\"}")) return -1;
-            return _ADC_RESULT;
+            int result = 0, average = 10;
+            for (int i = 0; i < average; i++)
+            {
+                if (!CNC_Write_m("{\"adc0\":\"\"}")) return -1;
+                result += _ADC_RESULT;
+            }
+            return (result / average);
+                //return _ADC_RESULT;
         }
 
         // =================================================================================
