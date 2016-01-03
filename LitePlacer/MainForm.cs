@@ -29,7 +29,7 @@ namespace LitePlacer {
         private LocationManager Locations;
 
         NozzleChanger nozzleChanger;
-
+        public visibilitygraph VisibilityGraph;
 
         private bool isHomed ;
         public bool IsHomed { get { return isHomed; } 
@@ -239,6 +239,24 @@ namespace LitePlacer {
 
             // setup a bunch of stuff on the forms
             LightPlacerFormsSetup();
+
+            VisibilityGraph = new visibilitygraph();
+            VisibilityGraph = VisibilityGraph.ReLoad();
+            if (VisibilityGraph == null) { VisibilityGraph = new visibilitygraph(); }
+            VisibilityGraph.drawingSurface = this.pictureBox1;
+            VisibilityGraph.setBounds(0, 0, Locations.GetLocation("Max Machine").X, Locations.GetLocation("Max Machine").Y);
+            /*
+            VisibilityGraph.insertGuard(50, 0, 50, 50);
+            VisibilityGraph.insertGuard(50, 50, Locations.GetLocation("Max Machine").X, 50);
+
+            VisibilityGraph.insertGuard(200, 200, 200, 150);
+            VisibilityGraph.insertGuard(200, 150, 500, 150);
+            VisibilityGraph.insertGuard(500, 150, 500, 200);
+            VisibilityGraph.insertGuard(500, 200, 200, 200);
+            */
+            dataGridGuards.DataSource = VisibilityGraph.Guards;
+            checkBoxUseGuards.Checked = VisibilityGraph.Enabled;
+            updateDataGridGuard();
         }
 
         private void JobData_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e) {
@@ -489,6 +507,8 @@ namespace LitePlacer {
 
             Properties.Settings.Default.Save();
             Tapes.SaveAll();
+            VisibilityGraph.SaveAll();
+            nozzleChanger.SaveAll();
             cameraView.Shutdown();
         }
 
@@ -4642,6 +4662,22 @@ reinitialize:
 
         }
 
+        
+        public void updateDataGridGuard() {
+            foreach (DataGridViewRow row in dataGridGuards.Rows) {
+                if (row.DataBoundItem != null) { 
+                    row.Cells[2].Value = ((Guard)row.DataBoundItem).VerticeS.X.ToString();
+                    row.Cells[3].Value = ((Guard)row.DataBoundItem).VerticeS.Y.ToString();
+                    row.Cells[5].Value = ((Guard)row.DataBoundItem).VerticeE.X.ToString();
+                    row.Cells[6].Value = ((Guard)row.DataBoundItem).VerticeE.Y.ToString();
+
+                    row.Cells[1].Value = ((Guard)row.DataBoundItem).VerticeS.Id;
+                    row.Cells[4].Value = ((Guard)row.DataBoundItem).VerticeE.Id;
+                }
+            }
+        }
+
+
         bool testingADC;
         public void testADC()
         {
@@ -4682,6 +4718,141 @@ reinitialize:
             JobData_GridView.Update();
         }
 
+        private void label65_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            string[] values = textSimulateToFrom.Text.Split(',');
+            if (values.Length == 4)
+            {
+                double x1, y1, x2, y2;
+                if (!double.TryParse(values[0], out x1)) { goto Error; }
+                if (!double.TryParse(values[1], out y1)) { goto Error; }
+                if (!double.TryParse(values[2], out x2)) { goto Error; }
+                if (!double.TryParse(values[3], out y2)) { goto Error; }
+
+                VisibilityGraph.redraw();
+                List<Vertice> path = null;// = new List<Vertice>();
+                VisibilityGraph.checkVisibles(new Vertice(x1, y1), new Vertice(x2, y2), out path);
+                updateDataGridGuard();
+            }
+            return;
+        Error:
+            ShowSimpleMessageBox("Wrong coordinates");
+        }
+
+        private void dataGridGuards_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            //double x1, y1, x2, y2;
+
+            if ((e.RowIndex == -1) || (e.ColumnIndex == -1)) { return; }
+
+            if (dataGridGuards.Rows[e.RowIndex].Cells[e.ColumnIndex] != null)
+            {
+                double v;
+                if (double.TryParse(dataGridGuards.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out v))
+                {
+                    switch (e.ColumnIndex)
+                    {
+                        case 2:
+                            ((Guard)dataGridGuards.Rows[e.RowIndex].DataBoundItem).VerticeS.X = v;
+                            break;
+                        case 3:
+                            ((Guard)dataGridGuards.Rows[e.RowIndex].DataBoundItem).VerticeS.Y = v;
+                            break;
+                        case 5:
+                            ((Guard)dataGridGuards.Rows[e.RowIndex].DataBoundItem).VerticeE.X = v;
+                            break;
+                        case 6:
+                            ((Guard)dataGridGuards.Rows[e.RowIndex].DataBoundItem).VerticeE.Y = v;
+                            break;
+                    }
+                }
+                if (VisibilityGraph != null) { VisibilityGraph.redraw(); }
+            }
+            VisibilityGraph.SaveAll();
+        }
+
+        private void buttonAddGuard_Click(object sender, EventArgs e)
+        {
+            string value = Microsoft.VisualBasic.Interaction.InputBox("Input coordinates delimited by commas (x1,y1,x2,y2)");
+            string[] values = value.Split(',');
+            if (values.Length == 4) {
+                double x1, y1, x2, y2;
+                if (!double.TryParse(values[0], out x1)) { goto Error;  }
+                if (!double.TryParse(values[1], out y1)) { goto Error; }
+                if (!double.TryParse(values[2], out x2)) { goto Error; }
+                if (!double.TryParse(values[3], out y2)) { goto Error; }
+                if (!VisibilityGraph.insertGuard(x1, y1, x2, y2)) { goto Error; }
+                updateDataGridGuard();
+                VisibilityGraph.SaveAll();
+                return;
+            }
+        Error:
+            ShowSimpleMessageBox("There was an error adding the guard");
+            return;
+        }
+
+        private void buttonRemoveGuard_Click(object sender, EventArgs e)
+        {
+            if (dataGridGuards.SelectedRows.Count == 0) { return; }
+
+            foreach (DataGridViewRow row in dataGridGuards.SelectedRows)
+            {
+                ((Guard)row.DataBoundItem).prepareToDestroy();
+                dataGridGuards.Rows.Remove(row);
+            }
+            VisibilityGraph.SaveAll();
+        }
+
+        private void checkBoxUseGuards_CheckedChanged(object sender, EventArgs e)
+        {
+            VisibilityGraph.Enabled = checkBoxUseGuards.Checked;
+        }
+
+        private void dataGridGuards_Paint(object sender, PaintEventArgs e)
+        {
+            //updateDataGridGuard();
+        }
+
+        private void dataGridGuards_Paint_1(object sender, PaintEventArgs e)
+        {
+            updateDataGridGuard();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            if (VisibilityGraph != null) { VisibilityGraph.redraw(); }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            string value = Microsoft.VisualBasic.Interaction.InputBox("Input coordinates delimited by commas (x,y,z,a)");
+            string[] values = value.Split(',');
+            if (values.Length >= 2)
+            {
+                double x, y, z, a;
+                double? _z = null, _a = null;
+
+                if (!double.TryParse(values[0], out x)) { goto Error; }
+                if (!double.TryParse(values[1], out y)) { goto Error; }
+                if (values.Length >= 3) { if (!double.TryParse(values[2], out z)) { _z = null; } else { _z = z; } }
+                if (values.Length >= 4) { if (!double.TryParse(values[3], out a)) { _a = null; } else { _a = a; } }
+
+                Cnc.CNC_XYZA(x, y, _a, _z);
+                return;
+            }
+        Error:
+            ShowSimpleMessageBox("There was an error adding the guard");
+            return;
+        }
     }	// end of: 	public partial class FormMain : Form
 
     // allows additionl of color info to displayText
@@ -4697,9 +4868,6 @@ reinitialize:
                 box.AppendText(text);
             }
         }
-
-
-
     }
 
 }	// end of: namespace LitePlacer

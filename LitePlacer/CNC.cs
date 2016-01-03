@@ -16,7 +16,7 @@ namespace LitePlacer {
         public bool JoggingBusy;
         public bool AbortPlacement;
 
-        public bool Simulation = false;
+        public bool Simulation = true;
 
         private bool _Zguard = true;
         public void ZGuardOn() { _Zguard = true; }
@@ -502,21 +502,66 @@ namespace LitePlacer {
                 ShowSimpleMessageBox("CNC_XY: Cnc not connected");
                 return false;
             }
-
-            CNC_BlockingWriteDone = false;
-            Thread t = new Thread(() => CNC_BlockingMove_thread(X, Y, Z, A)) {
-                Name = "CNC_BlockingMove",
-                IsBackground = true
-            };
-            t.Start();
-
             int i = 0;
-            while (!CNC_BlockingWriteDone) {
-                Thread.Sleep(2);
-                Application.DoEvents();
-                i++;
-                if (i > CNC_MoveTimeout) {
-                    _readyEvent.Set();   // causes CNC_Blocking_thread to exit
+
+            if (MainForm.VisibilityGraph.Enabled && !(X == null && Y == null))
+            {
+                if (X == null) { X = CurrentX; }
+                if (Y == null) { Y = CurrentY; }
+
+                List<Vertice> goLocations = null;
+                MainForm.VisibilityGraph.checkVisibles(new Vertice(CurrentX, CurrentY), new Vertice((double) X, (double) Y), out goLocations);
+
+                foreach (Vertice loc in goLocations) {
+                    CNC_BlockingWriteDone = false;
+                    if (loc != goLocations[goLocations.Count-1]) {
+                        Thread t = new Thread(() => CNC_BlockingMove_thread(loc.X, loc.Y, null, null)) {
+                            Name = "CNC_BlockingMove",
+                            IsBackground = true
+                        };
+                        t.Start();
+                    }
+                    else
+                    {
+                        Thread t = new Thread(() => CNC_BlockingMove_thread(loc.X, loc.Y, Z, A)) {
+                            Name = "CNC_BlockingMove",
+                            IsBackground = true
+                        };
+                        t.Start();
+                    }
+ 
+
+                    while (!CNC_BlockingWriteDone)
+                    {
+                        Thread.Sleep(2);
+                        Application.DoEvents();
+                        i++;
+                        if (i > CNC_MoveTimeout)
+                        {
+                            _readyEvent.Set();   // causes CNC_Blocking_thread to exit
+                        }
+                    }
+                }
+            }
+            else
+            {
+                CNC_BlockingWriteDone = false;
+                Thread t = new Thread(() => CNC_BlockingMove_thread(X, Y, Z, A))
+                {
+                    Name = "CNC_BlockingMove",
+                    IsBackground = true
+                };
+                t.Start();
+
+                while (!CNC_BlockingWriteDone)
+                {
+                    Thread.Sleep(2);
+                    Application.DoEvents();
+                    i++;
+                    if (i > CNC_MoveTimeout)
+                    {
+                        _readyEvent.Set();   // causes CNC_Blocking_thread to exit
+                    }
                 }
             }
 

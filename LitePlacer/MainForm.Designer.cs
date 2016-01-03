@@ -33,8 +33,8 @@ namespace LitePlacer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.TestNeedleRecognition_button = new System.Windows.Forms.Button();
             this.textBoxSendtoTinyG = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -342,6 +342,21 @@ namespace LitePlacer
             this.needleHeight_button = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.NozzleChanger = new System.Windows.Forms.TabPage();
+            this.textSimulateToFrom = new System.Windows.Forms.TextBox();
+            this.label67 = new System.Windows.Forms.Label();
+            this.buttonAddGuard = new System.Windows.Forms.Button();
+            this.buttonRemoveGuard = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.label65 = new System.Windows.Forms.Label();
+            this.dataGridGuards = new System.Windows.Forms.DataGridView();
+            this.V1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.X1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Y1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.V2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.X2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Y2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.guardsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.textBoxNozzleSpeed = new System.Windows.Forms.TextBox();
             this.label64 = new System.Windows.Forms.Label();
             this.dataGridNozzes = new System.Windows.Forms.DataGridView();
@@ -396,6 +411,10 @@ namespace LitePlacer
             this.zguardoff_button = new System.Windows.Forms.Button();
             this.smallDebugWindow = new System.Windows.Forms.RichTextBox();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.verticesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.checkBoxUseGuards = new System.Windows.Forms.CheckBox();
             this.countDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.componentListDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.componentTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -418,6 +437,8 @@ namespace LitePlacer
             this.xDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.yDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.namedLocationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.idDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.visibilitygraphBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nozzleBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.xDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -427,6 +448,7 @@ namespace LitePlacer
             this.nozzleBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.nozzleChangerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.partLocationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.button10 = new System.Windows.Forms.Button();
             this.Tapes_tabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Tapes_dataGridView)).BeginInit();
             this.groupBox12.SuspendLayout();
@@ -462,14 +484,19 @@ namespace LitePlacer
             this.groupBox7.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.NozzleChanger.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridGuards)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.guardsBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridNozzes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.datagridLoadSequence)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.verticesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.jobDataBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.physicalComponentBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tapeObjBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.namedLocationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.visibilitygraphBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleLocationsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource1)).BeginInit();
@@ -3261,14 +3288,14 @@ namespace LitePlacer
             this.JobData_GridView.AllowUserToAddRows = false;
             this.JobData_GridView.AutoGenerateColumns = false;
             this.JobData_GridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.JobData_GridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.JobData_GridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.JobData_GridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.JobData_GridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.countDataGridViewTextBoxColumn,
@@ -3307,14 +3334,14 @@ namespace LitePlacer
             this.CadData_GridView.AutoGenerateColumns = false;
             this.CadData_GridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised;
             this.CadData_GridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.CadData_GridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.CadData_GridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.CadData_GridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.CadData_GridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.designatorDataGridViewTextBoxColumn,
@@ -3932,6 +3959,16 @@ namespace LitePlacer
             // 
             // NozzleChanger
             // 
+            this.NozzleChanger.Controls.Add(this.button10);
+            this.NozzleChanger.Controls.Add(this.checkBoxUseGuards);
+            this.NozzleChanger.Controls.Add(this.textSimulateToFrom);
+            this.NozzleChanger.Controls.Add(this.label67);
+            this.NozzleChanger.Controls.Add(this.buttonAddGuard);
+            this.NozzleChanger.Controls.Add(this.buttonRemoveGuard);
+            this.NozzleChanger.Controls.Add(this.button9);
+            this.NozzleChanger.Controls.Add(this.label65);
+            this.NozzleChanger.Controls.Add(this.dataGridGuards);
+            this.NozzleChanger.Controls.Add(this.pictureBox1);
             this.NozzleChanger.Controls.Add(this.textBoxNozzleSpeed);
             this.NozzleChanger.Controls.Add(this.label64);
             this.NozzleChanger.Controls.Add(this.dataGridNozzes);
@@ -3952,9 +3989,144 @@ namespace LitePlacer
             this.NozzleChanger.UseVisualStyleBackColor = true;
             this.NozzleChanger.Click += new System.EventHandler(this.NozzleChanger_Click);
             // 
+            // textSimulateToFrom
+            // 
+            this.textSimulateToFrom.Location = new System.Drawing.Point(538, 329);
+            this.textSimulateToFrom.Name = "textSimulateToFrom";
+            this.textSimulateToFrom.Size = new System.Drawing.Size(113, 20);
+            this.textSimulateToFrom.TabIndex = 22;
+            this.textSimulateToFrom.Text = "0,0,300,300";
+            // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(386, 332);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(146, 13);
+            this.label67.TabIndex = 21;
+            this.label67.Text = "Simulate to/from (x1,y1,x2,y2)";
+            // 
+            // buttonAddGuard
+            // 
+            this.buttonAddGuard.Location = new System.Drawing.Point(204, 329);
+            this.buttonAddGuard.Name = "buttonAddGuard";
+            this.buttonAddGuard.Size = new System.Drawing.Size(75, 22);
+            this.buttonAddGuard.TabIndex = 20;
+            this.buttonAddGuard.Text = "Add Guard";
+            this.buttonAddGuard.UseVisualStyleBackColor = true;
+            this.buttonAddGuard.Click += new System.EventHandler(this.buttonAddGuard_Click);
+            // 
+            // buttonRemoveGuard
+            // 
+            this.buttonRemoveGuard.Location = new System.Drawing.Point(285, 329);
+            this.buttonRemoveGuard.Name = "buttonRemoveGuard";
+            this.buttonRemoveGuard.Size = new System.Drawing.Size(75, 22);
+            this.buttonRemoveGuard.TabIndex = 19;
+            this.buttonRemoveGuard.Text = "Remove";
+            this.buttonRemoveGuard.UseVisualStyleBackColor = true;
+            this.buttonRemoveGuard.Click += new System.EventHandler(this.buttonRemoveGuard_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(658, 329);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(75, 22);
+            this.button9.TabIndex = 18;
+            this.button9.Text = "Simulate";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(13, 332);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(82, 13);
+            this.label65.TabIndex = 17;
+            this.label65.Text = "Keepout guards";
+            this.label65.Click += new System.EventHandler(this.label65_Click);
+            // 
+            // dataGridGuards
+            // 
+            this.dataGridGuards.AllowUserToAddRows = false;
+            this.dataGridGuards.AllowUserToDeleteRows = false;
+            this.dataGridGuards.AutoGenerateColumns = false;
+            this.dataGridGuards.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridGuards.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.idDataGridViewTextBoxColumn1,
+            this.V1,
+            this.X1,
+            this.Y1,
+            this.V2,
+            this.X2,
+            this.Y2});
+            this.dataGridGuards.DataSource = this.guardsBindingSource;
+            this.dataGridGuards.Location = new System.Drawing.Point(16, 357);
+            this.dataGridGuards.MultiSelect = false;
+            this.dataGridGuards.Name = "dataGridGuards";
+            this.dataGridGuards.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridGuards.Size = new System.Drawing.Size(344, 286);
+            this.dataGridGuards.TabIndex = 16;
+            this.dataGridGuards.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridGuards_CellValueChanged);
+            this.dataGridGuards.Paint += new System.Windows.Forms.PaintEventHandler(this.dataGridGuards_Paint_1);
+            // 
+            // V1
+            // 
+            this.V1.HeaderText = "V1";
+            this.V1.Name = "V1";
+            this.V1.ReadOnly = true;
+            this.V1.Width = 40;
+            // 
+            // X1
+            // 
+            this.X1.HeaderText = "X1";
+            this.X1.Name = "X1";
+            this.X1.Width = 40;
+            // 
+            // Y1
+            // 
+            this.Y1.HeaderText = "Y1";
+            this.Y1.Name = "Y1";
+            this.Y1.Width = 40;
+            // 
+            // V2
+            // 
+            this.V2.HeaderText = "V2";
+            this.V2.Name = "V2";
+            this.V2.ReadOnly = true;
+            this.V2.Width = 40;
+            // 
+            // X2
+            // 
+            this.X2.HeaderText = "X2";
+            this.X2.Name = "X2";
+            this.X2.Width = 40;
+            // 
+            // Y2
+            // 
+            this.Y2.HeaderText = "Y2";
+            this.Y2.Name = "Y2";
+            this.Y2.Width = 40;
+            // 
+            // guardsBindingSource
+            // 
+            this.guardsBindingSource.DataMember = "Guards";
+            this.guardsBindingSource.DataSource = this.visibilitygraphBindingSource;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox1.Location = new System.Drawing.Point(389, 357);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(343, 286);
+            this.pictureBox1.TabIndex = 15;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+            // 
             // textBoxNozzleSpeed
             // 
-            this.textBoxNozzleSpeed.Location = new System.Drawing.Point(121, 305);
+            this.textBoxNozzleSpeed.Location = new System.Drawing.Point(633, 249);
             this.textBoxNozzleSpeed.Name = "textBoxNozzleSpeed";
             this.textBoxNozzleSpeed.Size = new System.Drawing.Size(100, 20);
             this.textBoxNozzleSpeed.TabIndex = 14;
@@ -3963,7 +4135,7 @@ namespace LitePlacer
             // label64
             // 
             this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(13, 308);
+            this.label64.Location = new System.Drawing.Point(525, 252);
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(102, 13);
             this.label64.TabIndex = 13;
@@ -4144,14 +4316,14 @@ namespace LitePlacer
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 955);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(893, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1587, 22);
             this.statusStrip1.TabIndex = 115;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(109, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
             // menuStrip1
@@ -4164,7 +4336,7 @@ namespace LitePlacer
             this.jobOperationsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 24);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(893, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1587, 24);
             this.menuStrip1.TabIndex = 116;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -4178,44 +4350,44 @@ namespace LitePlacer
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadJobFileToolStripMenuItem
             // 
             this.loadJobFileToolStripMenuItem.Name = "loadJobFileToolStripMenuItem";
-            this.loadJobFileToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.loadJobFileToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.loadJobFileToolStripMenuItem.Text = "Load Job File";
             this.loadJobFileToolStripMenuItem.Click += new System.EventHandler(this.loadJobFileToolStripMenuItem_Click);
             // 
             // saveJobFileToolStripMenuItem
             // 
             this.saveJobFileToolStripMenuItem.Name = "saveJobFileToolStripMenuItem";
-            this.saveJobFileToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.saveJobFileToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveJobFileToolStripMenuItem.Text = "Save Job File";
             this.saveJobFileToolStripMenuItem.Click += new System.EventHandler(this.saveJobFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(188, 6);
             // 
             // loadCADFileToolStripMenuItem
             // 
             this.loadCADFileToolStripMenuItem.Name = "loadCADFileToolStripMenuItem";
-            this.loadCADFileToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.loadCADFileToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.loadCADFileToolStripMenuItem.Text = "Load Pick-n-Place File";
             this.loadCADFileToolStripMenuItem.Click += new System.EventHandler(this.loadCADFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(173, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -4226,34 +4398,34 @@ namespace LitePlacer
             this.loadUserDefaultsToolStripMenuItem,
             this.saveUserDefaultsToolStripMenuItem});
             this.tinyGToolStripMenuItem.Name = "tinyGToolStripMenuItem";
-            this.tinyGToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.tinyGToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.tinyGToolStripMenuItem.Text = "TinyG";
             // 
             // resetToDefaultsToolStripMenuItem
             // 
             this.resetToDefaultsToolStripMenuItem.Name = "resetToDefaultsToolStripMenuItem";
-            this.resetToDefaultsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.resetToDefaultsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.resetToDefaultsToolStripMenuItem.Text = "Reset To Built-In Defaults";
             this.resetToDefaultsToolStripMenuItem.Click += new System.EventHandler(this.resetToDefaultsToolStripMenuItem_Click);
             // 
             // loadUserDefaultsToolStripMenuItem
             // 
             this.loadUserDefaultsToolStripMenuItem.Name = "loadUserDefaultsToolStripMenuItem";
-            this.loadUserDefaultsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.loadUserDefaultsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.loadUserDefaultsToolStripMenuItem.Text = "Load User Defaults";
             this.loadUserDefaultsToolStripMenuItem.Click += new System.EventHandler(this.loadUserDefaultsToolStripMenuItem_Click);
             // 
             // saveUserDefaultsToolStripMenuItem
             // 
             this.saveUserDefaultsToolStripMenuItem.Name = "saveUserDefaultsToolStripMenuItem";
-            this.saveUserDefaultsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.saveUserDefaultsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.saveUserDefaultsToolStripMenuItem.Text = "Save User Defaults";
             this.saveUserDefaultsToolStripMenuItem.Click += new System.EventHandler(this.saveUserDefaultsToolStripMenuItem_Click);
             // 
             // goToLocationToolStripMenuItem
             // 
             this.goToLocationToolStripMenuItem.Name = "goToLocationToolStripMenuItem";
-            this.goToLocationToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.goToLocationToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
             this.goToLocationToolStripMenuItem.Text = "GoTo Location";
             // 
             // tapeToolStripMenuItem
@@ -4273,91 +4445,91 @@ namespace LitePlacer
             this.toolStripSeparator5,
             this.pickupMultipleComponentsToolStripMenuItem});
             this.tapeToolStripMenuItem.Name = "tapeToolStripMenuItem";
-            this.tapeToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.tapeToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
             this.tapeToolStripMenuItem.Text = "Tape";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.saveToolStripMenuItem.Text = "Save Default";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // reLoadToolStripMenuItem
             // 
             this.reLoadToolStripMenuItem.Name = "reLoadToolStripMenuItem";
-            this.reLoadToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.reLoadToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.reLoadToolStripMenuItem.Text = "ReLoad Default";
             this.reLoadToolStripMenuItem.Click += new System.EventHandler(this.reLoadToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.saveAsToolStripMenuItem.Text = "Save As ...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.loadToolStripMenuItem.Text = "Load ...";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(241, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(255, 6);
             // 
             // resetAllPickupZsToolStripMenuItem
             // 
             this.resetAllPickupZsToolStripMenuItem.Name = "resetAllPickupZsToolStripMenuItem";
-            this.resetAllPickupZsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.resetAllPickupZsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.resetAllPickupZsToolStripMenuItem.Text = "Reset All Pickup Zs";
             this.resetAllPickupZsToolStripMenuItem.Click += new System.EventHandler(this.resetAllPickupZsToolStripMenuItem_Click);
             // 
             // resetAllPlaceZsToolStripMenuItem
             // 
             this.resetAllPlaceZsToolStripMenuItem.Name = "resetAllPlaceZsToolStripMenuItem";
-            this.resetAllPlaceZsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.resetAllPlaceZsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.resetAllPlaceZsToolStripMenuItem.Text = "Reset All Place Zs";
             this.resetAllPlaceZsToolStripMenuItem.Click += new System.EventHandler(this.resetAllPlaceZsToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(241, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(255, 6);
             // 
             // takePhotosOfComponentsToolStripMenuItem
             // 
             this.takePhotosOfComponentsToolStripMenuItem.Name = "takePhotosOfComponentsToolStripMenuItem";
-            this.takePhotosOfComponentsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.takePhotosOfComponentsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.takePhotosOfComponentsToolStripMenuItem.Text = "Take Photos Of Components";
             this.takePhotosOfComponentsToolStripMenuItem.Click += new System.EventHandler(this.takePhotosOfComponentsToolStripMenuItem_Click);
             // 
             // quickAddMultipleTapesToolStripMenuItem
             // 
             this.quickAddMultipleTapesToolStripMenuItem.Name = "quickAddMultipleTapesToolStripMenuItem";
-            this.quickAddMultipleTapesToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.quickAddMultipleTapesToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.quickAddMultipleTapesToolStripMenuItem.Text = "Quick Add Multiple Tapes";
             this.quickAddMultipleTapesToolStripMenuItem.Click += new System.EventHandler(this.tapesQuickAdd_button_Click);
             // 
             // rescalAllTapesForAvailablePartsToolStripMenuItem
             // 
             this.rescalAllTapesForAvailablePartsToolStripMenuItem.Name = "rescalAllTapesForAvailablePartsToolStripMenuItem";
-            this.rescalAllTapesForAvailablePartsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.rescalAllTapesForAvailablePartsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.rescalAllTapesForAvailablePartsToolStripMenuItem.Text = "Rescal All Tapes For Available Parts";
             this.rescalAllTapesForAvailablePartsToolStripMenuItem.Click += new System.EventHandler(this.rescalAllTapesForAvailablePartsToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(241, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(255, 6);
             // 
             // pickupMultipleComponentsToolStripMenuItem
             // 
             this.pickupMultipleComponentsToolStripMenuItem.Name = "pickupMultipleComponentsToolStripMenuItem";
-            this.pickupMultipleComponentsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.pickupMultipleComponentsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.pickupMultipleComponentsToolStripMenuItem.Text = "Pickup Multiple Components";
             this.pickupMultipleComponentsToolStripMenuItem.Click += new System.EventHandler(this.pickupMultipleComponentsToolStripMenuItem_Click);
             // 
@@ -4366,13 +4538,13 @@ namespace LitePlacer
             this.jobOperationsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.resetAllPlacedComponentsToolStripMenuItem});
             this.jobOperationsToolStripMenuItem.Name = "jobOperationsToolStripMenuItem";
-            this.jobOperationsToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
+            this.jobOperationsToolStripMenuItem.Size = new System.Drawing.Size(98, 20);
             this.jobOperationsToolStripMenuItem.Text = "Job Operations";
             // 
             // resetAllPlacedComponentsToolStripMenuItem
             // 
             this.resetAllPlacedComponentsToolStripMenuItem.Name = "resetAllPlacedComponentsToolStripMenuItem";
-            this.resetAllPlacedComponentsToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.resetAllPlacedComponentsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.resetAllPlacedComponentsToolStripMenuItem.Text = "Reset All Placed Components";
             this.resetAllPlacedComponentsToolStripMenuItem.Click += new System.EventHandler(this.resetAllPlacedComponentsToolStripMenuItem_Click);
             // 
@@ -4410,9 +4582,37 @@ namespace LitePlacer
             // 
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(893, 24);
+            this.menuStrip2.Size = new System.Drawing.Size(1587, 24);
             this.menuStrip2.TabIndex = 155;
             this.menuStrip2.Text = "menuStrip2";
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "VerticeS";
+            this.dataGridViewTextBoxColumn2.HeaderText = "VerticeS";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.DataPropertyName = "VerticeE";
+            this.dataGridViewTextBoxColumn3.HeaderText = "VerticeE";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            // 
+            // verticesBindingSource
+            // 
+            this.verticesBindingSource.DataMember = "Vertices";
+            this.verticesBindingSource.DataSource = this.visibilitygraphBindingSource;
+            // 
+            // checkBoxUseGuards
+            // 
+            this.checkBoxUseGuards.AutoSize = true;
+            this.checkBoxUseGuards.Location = new System.Drawing.Point(97, 331);
+            this.checkBoxUseGuards.Name = "checkBoxUseGuards";
+            this.checkBoxUseGuards.Size = new System.Drawing.Size(45, 17);
+            this.checkBoxUseGuards.TabIndex = 23;
+            this.checkBoxUseGuards.Text = "Use";
+            this.checkBoxUseGuards.UseVisualStyleBackColor = true;
+            this.checkBoxUseGuards.CheckedChanged += new System.EventHandler(this.checkBoxUseGuards_CheckedChanged);
             // 
             // countDataGridViewTextBoxColumn
             // 
@@ -4556,6 +4756,18 @@ namespace LitePlacer
             // 
             this.namedLocationBindingSource.DataSource = typeof(LitePlacer.NamedLocation);
             // 
+            // idDataGridViewTextBoxColumn1
+            // 
+            this.idDataGridViewTextBoxColumn1.DataPropertyName = "Id";
+            this.idDataGridViewTextBoxColumn1.HeaderText = "Id";
+            this.idDataGridViewTextBoxColumn1.Name = "idDataGridViewTextBoxColumn1";
+            this.idDataGridViewTextBoxColumn1.ReadOnly = true;
+            this.idDataGridViewTextBoxColumn1.Width = 40;
+            // 
+            // visibilitygraphBindingSource
+            // 
+            this.visibilitygraphBindingSource.DataSource = typeof(LitePlacer.visibilitygraph);
+            // 
             // idDataGridViewTextBoxColumn
             // 
             this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
@@ -4601,12 +4813,22 @@ namespace LitePlacer
             // 
             this.partLocationBindingSource.DataSource = typeof(LitePlacer.PartLocation);
             // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(739, 329);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(75, 22);
+            this.button10.TabIndex = 156;
+            this.button10.Text = "Goto loc.";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(909, 784);
+            this.ClientSize = new System.Drawing.Size(1604, 784);
             this.Controls.Add(this.smallDebugWindow);
             this.Controls.Add(this.PausePlacement_button);
             this.Controls.Add(this.AbortPlacement_button);
@@ -4711,16 +4933,21 @@ namespace LitePlacer
             this.groupBox4.PerformLayout();
             this.NozzleChanger.ResumeLayout(false);
             this.NozzleChanger.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridGuards)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.guardsBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridNozzes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.datagridLoadSequence)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.verticesBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.jobDataBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.physicalComponentBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tapeObjBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.namedLocationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.visibilitygraphBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleLocationsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource1)).EndInit();
@@ -5127,6 +5354,28 @@ namespace LitePlacer
         private Button rowToBottom_button;
         private Button rowToTop_Button;
         private Button button7;
+        private Label label65;
+        private DataGridView dataGridGuards;
+        private PictureBox pictureBox1;
+        private Button button9;
+        private BindingSource visibilitygraphBindingSource;
+        private BindingSource guardsBindingSource;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private BindingSource verticesBindingSource;
+        private DataGridViewTextBoxColumn idDataGridViewTextBoxColumn1;
+        private DataGridViewTextBoxColumn V1;
+        private DataGridViewTextBoxColumn X1;
+        private DataGridViewTextBoxColumn Y1;
+        private DataGridViewTextBoxColumn V2;
+        private DataGridViewTextBoxColumn X2;
+        private DataGridViewTextBoxColumn Y2;
+        private Button buttonAddGuard;
+        private Button buttonRemoveGuard;
+        private TextBox textSimulateToFrom;
+        private Label label67;
+        private CheckBox checkBoxUseGuards;
+        private Button button10;
     }
 }
 

@@ -231,6 +231,7 @@
     <Compile Include="Video\VideoDetection.cs" />
     <Compile Include="Video\VideoProcessing.cs" />
     <Compile Include="Video\VideoTextMarkup.cs" />
+    <Compile Include="visibilitygraph.cs" />
     <EmbeddedResource Include="CameraView.resx">
       <DependentUpon>CameraView.cs</DependentUpon>
     </EmbeddedResource>
@@ -269,6 +270,7 @@
     <None Include="Properties\DataSources\PartLocation.datasource" />
     <None Include="Properties\DataSources\PhysicalComponent.datasource" />
     <None Include="Properties\DataSources\TapeObj.datasource" />
+    <None Include="Properties\DataSources\visibilitygraph.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings1.Designer.cs</LastGenOutput>

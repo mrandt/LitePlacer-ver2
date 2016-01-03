@@ -160,6 +160,7 @@ namespace LitePlacer
             NozzleChanger deserialization = Global.DeSerialization<NozzleChanger>(filename);
             speed = deserialization.speed;
             nozzles = deserialization.nozzles;
+            enabled = deserialization.enabled;
 
             foreach (Nozzle nozzle in nozzles) { nozzle.setDataGrid(GridLocations); }
         }
