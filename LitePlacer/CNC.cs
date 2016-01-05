@@ -16,7 +16,7 @@ namespace LitePlacer {
         public bool JoggingBusy;
         public bool AbortPlacement;
 
-        public bool Simulation = true;
+        public bool Simulation = false;
 
         private bool _Zguard = true;
         public void ZGuardOn() { _Zguard = true; }
@@ -497,6 +497,17 @@ namespace LitePlacer {
 
             if ((X != null || Y != null) && !CNC_MoveIsSafe_m(new PartLocation(X, Y))) return false;
 
+            // avoid moving if same position
+            double _x, _y, _z, _a;
+            if (X != null) { _x = Math.Round((double)X, 2); } else { _x = Math.Round(CurrentX, 2);  }
+            if (Y != null) { _y = Math.Round((double)Y, 2); } else { _y = Math.Round(CurrentY, 2); }
+            if (Z != null) { _z = Math.Round((double)Z, 2); } else { _z = Math.Round(CurrentZ, 2); }
+            if (A != null) { _a = Math.Round((double)A, 2); } else { _a = Math.Round(CurrentA, 2); }
+
+            if ((Math.Round(CurrentX, 2) == _x) && (Math.Round(CurrentY, 2) == _y) &&
+                (Math.Round(CurrentZ, 2) == _z) && (Math.Round(CurrentA, 2) == _a)) { 
+                return true;  
+            }
 
             if (!Connected && !Simulation) {
                 ShowSimpleMessageBox("CNC_XY: Cnc not connected");
@@ -541,6 +552,15 @@ namespace LitePlacer {
                             _readyEvent.Set();   // causes CNC_Blocking_thread to exit
                         }
                     }
+
+                    CNC_BlockingWriteDone = true;
+                    if ((i > CNC_MoveTimeout) && Connected)
+                    {
+                        Global.Instance.mainForm.ShowSimpleMessageBox("CNC: Timeout / Cnc connection cut!");
+                        Close();
+                        Global.Instance.mainForm.UpdateCncConnectionStatus();
+                        break;
+                    }
                 }
             }
             else
@@ -563,14 +583,17 @@ namespace LitePlacer {
                         _readyEvent.Set();   // causes CNC_Blocking_thread to exit
                     }
                 }
+
+                CNC_BlockingWriteDone = true;
+                if ((i > CNC_MoveTimeout) && Connected)
+                {
+                    Global.Instance.mainForm.ShowSimpleMessageBox("CNC: Timeout / Cnc connection cut!");
+                    Close();
+                    Global.Instance.mainForm.UpdateCncConnectionStatus();
+                }
             }
 
-            CNC_BlockingWriteDone = true;
-            if ((i > CNC_MoveTimeout) && Connected) {
-                Global.Instance.mainForm.ShowSimpleMessageBox("CNC: Timeout / Cnc connection cut!");
-                Close();
-                Global.Instance.mainForm.UpdateCncConnectionStatus();
-            }
+
             return (Connected);
         }
 

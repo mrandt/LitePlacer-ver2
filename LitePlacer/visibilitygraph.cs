@@ -445,7 +445,8 @@ namespace LitePlacer
             }
         }
 
-        public bool checkVisibles(Vertice Start, Vertice End, out List<Vertice> path) {            
+        public bool checkVisibles(Vertice Start, Vertice End, out List<Vertice> path) {
+            if (Vertices == null || Guards == null) { path = null;  return false; }
             Vertices.Add(End);
             path = new List<Vertice>();
             path.Add(Start);

@@ -575,6 +575,7 @@ namespace LitePlacer {
         public bool SetAsFeeder(TapeObj t)
         {
             string input = Microsoft.VisualBasic.Interaction.InputBox("Number of components on reel", "Reel size", "5000", -1, -1);
+            if (input == "") { return false;  }
             int reelSize = int.Parse(input);
 
             if (reelSize < 1) { return false; };

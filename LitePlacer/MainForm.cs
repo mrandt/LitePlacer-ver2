@@ -2328,12 +2328,13 @@ namespace LitePlacer {
                 ShowSimpleMessageBox("Placement operation failed, nothing done.");
                 return;
             }
-
+            
             List<PhysicalComponent> toPlace = new List<PhysicalComponent>();
-            for (int i = 0; i < selectedCount; i++) {
+            for (int i = 0; i < JobData_GridView.Rows.Count; i++) {
                 for (int j = 0; j < selectedCount; j++) {
                     if (JobData_GridView.SelectedRows[j].Index == i) { 
                         var job = (JobData)JobData_GridView.SelectedRows[j].DataBoundItem;
+                        //var job = (JobData) row.DataBoundItem;
                         if (job.Method == "Change nozzle" || job.Method == "Recalibrate")
                         {
                             PhysicalComponent x = new PhysicalComponent();
@@ -2352,7 +2353,7 @@ namespace LitePlacer {
                             }
                         }
                         break;
-                    }
+                     }
                 }
             }
 
@@ -2546,7 +2547,8 @@ namespace LitePlacer {
                     break;
 
                 case "Recalibrate":
-                    if (!PrepareToPlace_m()) return false;
+                    //if (!PrepareToPlace_m()) return false;
+                    CalibrateNeedle_m();
                     break;
 
                 case "Ignore":
@@ -4647,10 +4649,10 @@ reinitialize:
             //            var job = (JobData)JobData_GridView.SelectedCells[i].OwningRow.DataBoundItem;
             //JobData_GridView.SelectedCells[0].ow
             //            foreach (DataGridViewRow row in JobData_GridView.SelectedCells.OwningRow.DataBoundItem;)
-            for (int i = 0; i < JobData_GridView.SelectedCells.Count; i++)
+            for (int i = 0; i < JobData_GridView.SelectedRows.Count; i++)
             {
-                var row = JobData_GridView.SelectedCells[i].OwningRow.Index;
-                var j = Cad.JobData[row];
+                JobData j = (JobData) JobData_GridView.SelectedRows[i].DataBoundItem;
+                //var j = Cad.JobData[i];
                 Cad.JobData.Remove(j);
                 Cad.JobData.Insert(0, j);
 
@@ -4708,12 +4710,17 @@ reinitialize:
 
         private void rowToBottom_button_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < JobData_GridView.SelectedCells.Count; i++)
+            for (int i = 0; i < JobData_GridView.SelectedRows.Count; i++)
             {
-                var row = JobData_GridView.SelectedCells[i].OwningRow.Index;
+                JobData j = (JobData)JobData_GridView.SelectedRows[i].DataBoundItem;
+                //var j = Cad.JobData[i];
+                Cad.JobData.Remove(j);
+                Cad.JobData.Add(j); 
+                
+                /*var row = JobData_GridView.SelectedCells[i].OwningRow.Index;
                 var j = Cad.JobData[row];
                 Cad.JobData.Remove(j);
-                Cad.JobData.Add(j);
+                Cad.JobData.Add(j);*/
             }
             JobData_GridView.Update();
         }
@@ -4736,7 +4743,7 @@ reinitialize:
                 VisibilityGraph.redraw();
                 List<Vertice> path = null;// = new List<Vertice>();
                 VisibilityGraph.checkVisibles(new Vertice(x1, y1), new Vertice(x2, y2), out path);
-                updateDataGridGuard();
+               updateDataGridGuard();
             }
             return;
         Error:
@@ -4786,6 +4793,10 @@ reinitialize:
                 if (!double.TryParse(values[2], out x2)) { goto Error; }
                 if (!double.TryParse(values[3], out y2)) { goto Error; }
                 if (!VisibilityGraph.insertGuard(x1, y1, x2, y2)) { goto Error; }
+                if (VisibilityGraph.Guards.Count == 1)
+                {
+                    dataGridGuards.DataSource = VisibilityGraph.Guards;
+                }
                 updateDataGridGuard();
                 VisibilityGraph.SaveAll();
                 return;
@@ -4851,6 +4862,41 @@ reinitialize:
             }
         Error:
             ShowSimpleMessageBox("There was an error adding the guard");
+            return;
+        }
+
+        private void buttonRepositionFeeders_Click(object sender, EventArgs e)
+        {
+            string value = Microsoft.VisualBasic.Interaction.InputBox("Reposition by X, Y");
+            string[] values = value.Split(',');
+            if (values.Length == 2)
+            {
+                double x, y;
+                if (!double.TryParse(values[0], out x)) { goto Error; }
+                if (!double.TryParse(values[1], out y)) { goto Error; }
+
+                foreach (TapeObj tapeObj in Tapes.tapeObjs) {
+                    tapeObj.FirstHole.X += x;
+                    tapeObj.FirstHole.Y += y;
+                    tapeObj.LastHole.X += x;
+                    tapeObj.LastHole.Y += y;
+                    foreach (NamedLocation component in tapeObj.AvailableParts) {
+                        component.X += x;
+                        component.Y += y;
+
+                        if (component.physicalComponent != null) { 
+                            component.physicalComponent.X_machine += x;
+                            component.physicalComponent.X_nominal += x;
+                            component.physicalComponent.Y_machine += y;
+                            component.physicalComponent.Y_nominal += y;
+                        }
+                    }
+                }
+            }
+            DisplayText("All feeders and tapes realigned.");
+            return;
+        Error:
+            ShowSimpleMessageBox("Coordinate error");
             return;
         }
     }	// end of: 	public partial class FormMain : Form
