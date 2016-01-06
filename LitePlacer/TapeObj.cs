@@ -119,17 +119,45 @@ namespace LitePlacer {
         // Settable
         public double a; //coeffients of equation defining location of tape a + b*x though mostly ignored
         public double Slope { set { slope = value; tapeOrientation = new PartLocation(1, value); AnglesChanged(); } get { return slope; } }
-        public String OriginalTapeOrientation { get { return originalTapeOrientation; } set { originalTapeOrientation = value; AnglesChanged(); } }
-        public String OriginalPartOrientation { get { return originalPartOrientation; } set { originalPartOrientation = value; AnglesChanged(); } }
+        public String OriginalTapeOrientation { get { return originalTapeOrientation; } 
+            set { 
+                originalTapeOrientation = value;
+                OriginalTapeOrientationVector = OrientationToVector(originalTapeOrientation);
+                tapeOrientation = OriginalTapeOrientationVector;
+                AnglesChanged(); 
+            } }
+        public String OriginalPartOrientation { get { return originalPartOrientation; } 
+            set { 
+                originalPartOrientation = value;
+                OriginalPartOrientationVector = OrientationToVector(originalPartOrientation);
+                AnglesChanged(); 
+            } }
 
         // Read Only
         [XmlIgnore]public bool TemplateBased { get { return (FirstPart != null); } }
         [XmlIgnore]public double TapeAngle { get { return TapeOrientation.ToDegrees(); } }
         [XmlIgnore]public double DeltaAngle { get { return TapeAngle - OriginalTapeOrientationVector.ToDegrees(); } }
         [XmlIgnore]public double PartAngle { get { return OriginalPartOrientationVector.ToDegrees() + DeltaAngle; } }
-        public PartLocation TapeOrientation { get { if (tapeOrientation == null) return OriginalTapeOrientationVector; return tapeOrientation; } }
-        public PartLocation OriginalTapeOrientationVector { get { return OrientationToVector(OriginalTapeOrientation); } }
-        public PartLocation OriginalPartOrientationVector { get { return OrientationToVector(OriginalPartOrientation); } }
+        public PartLocation TapeOrientation
+        {
+            get
+            {
+                if (tapeOrientation == null)
+                {
+                    return OriginalTapeOrientationVector;
+                }
+                return tapeOrientation;
+            }
+        }
+        public PartLocation OriginalTapeOrientationVector { 
+            get { return OrientationToVector(OriginalTapeOrientation); }
+            set { }
+        }
+        
+        public PartLocation OriginalPartOrientationVector { 
+            get { return OrientationToVector(OriginalPartOrientation); }
+            set { }
+        }
 
 
 

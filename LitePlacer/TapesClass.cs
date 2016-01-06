@@ -261,19 +261,32 @@ namespace LitePlacer {
 
         public bool PopulateAvailableParts(TapeObj x) {
             if (x.FirstHole == null) return false; // currently only handling hole-calibrated harts
-            if (x.TemplateFilename == null || !File.Exists(x.TemplateFilename) ) return false;
             MainForm.Cnc.SlackCompensation = false;
             SetCurrentTapeMeasurement(x.TapeType);
 
             //find out the max number of parts
             int i = 0;
+            PartLocation loc;
+            PartLocation addloc = new PartLocation(x.HoleToPartSpacingX, x.HoleToPartSpacingY).Rotate(x.TapeOrientation.ToRadians());
+
+            x.AvailableParts.Clear();
             while (true) {
-                if (!MainForm.Cnc.CNC_XY(x.GetHoleLocation(i))) { MainForm.Cnc.SlackCompensation = true; return false; }
+                loc = x.GetHoleLocation(i);
+                if (!MainForm.Cnc.CNC_XY(loc)) { MainForm.Cnc.SlackCompensation = true; return false; }
                 var thing = VideoDetection.FindClosest(MainForm.cameraView.downVideoProcessing, Shapes.ShapeTypes.Circle, 1, 3);
                 if (thing == null) break;
+                
+                if (x.TemplateFilename == null || !File.Exists(x.TemplateFilename))
+                {
+                    loc += addloc;
+                    x.AvailableParts.Add(new NamedLocation(loc, i.ToString()));
+                    Global.Instance.mainForm.DisplayText("Adding part "+ i.ToString() +" to "+x.ID);
+                }
+
                 if (Cnc.AbortPlacement) { MainForm.Cnc.SlackCompensation = true; return false; }
                 i++;
             }
+            if (x.TemplateFilename == null || !File.Exists(x.TemplateFilename) && i>0) return true;
 
             MainForm.cameraView.SetDownCameraFunctionSet("ComponentPhoto");
 

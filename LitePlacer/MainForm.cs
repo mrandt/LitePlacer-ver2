@@ -260,6 +260,11 @@ namespace LitePlacer {
             dataGridGuards.DataSource = VisibilityGraph.Guards;
             checkBoxUseGuards.Checked = VisibilityGraph.Enabled;
             updateDataGridGuard();
+
+            Cnc.RawWrite("{\"gc\":\"G1 F100 Y0\"}");
+            Thread.Sleep(100);
+            Cnc.RawWrite("!%");
+            
         }
 
         private void JobData_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e) {
@@ -1143,12 +1148,18 @@ namespace LitePlacer {
 
            // int lines = SerialMonitor_richTextBox.GetFirstCharIndexFromLine(1);
 
-            if (checkBoxLimitDebugLines.Checked && (int.Parse(textBoxLimitDebugLines.Text) < ((int) SerialMonitor_richTextBox.Lines.Length))) {
-                do {
-                    SerialMonitor_richTextBox.Select(0, SerialMonitor_richTextBox.GetFirstCharIndexFromLine(1));
-                    SerialMonitor_richTextBox.SelectedText = "";
-                } while (int.Parse(textBoxLimitDebugLines.Text) < ((int) SerialMonitor_richTextBox.Lines.Length));
+            try
+            {
+                if (checkBoxLimitDebugLines.Checked && (int.Parse(textBoxLimitDebugLines.Text) < ((int)SerialMonitor_richTextBox.Lines.Length)))
+                {
+                    do
+                    {
+                        SerialMonitor_richTextBox.Select(0, SerialMonitor_richTextBox.GetFirstCharIndexFromLine(1));
+                        SerialMonitor_richTextBox.SelectedText = "";
+                    } while (int.Parse(textBoxLimitDebugLines.Text) < ((int)SerialMonitor_richTextBox.Lines.Length));
+                }
             }
+            catch { }
         }
 
         public void DisplayText(string txt) {

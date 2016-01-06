@@ -16,7 +16,7 @@ namespace LitePlacer {
         public bool JoggingBusy;
         public bool AbortPlacement;
 
-        public bool Simulation = true;
+        public bool Simulation = false;
 
         private bool _Zguard = true;
         public void ZGuardOn() { _Zguard = true; }
@@ -58,7 +58,6 @@ namespace LitePlacer {
             Com.Open(name);
             _readyEvent.Set();
 
-            CNC_Write_m("{\"^x\":\"\"}");
             return Com.IsOpen;
         }
 
