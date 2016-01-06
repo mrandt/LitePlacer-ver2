@@ -209,9 +209,12 @@ namespace LitePlacer {
             UpdateTapeTypesBinding();
             PartType.DataSource = Enum.GetNames(typeof(ComponentType));
 
+            (Tapes_dataGridView.Columns["Nozzle"] as DataGridViewComboBoxColumn).DataSource =
+                new BindingSource { DataSource = nozzleChanger.getIDs() };
+
             //jobs table
             JobData_GridView.DataSource = Cad.JobData;
-            methodDataGridViewComboBoxColumn.DataSource = new[] {"?", "Place", "LoosePlace", "Change Needle", "Recalibrate", "Ignore", "Pause", "Fiducial", "Place With UpCam", "Change nozzle"};
+            methodDataGridViewComboBoxColumn.DataSource = new[] {"?", "Place", "LoosePlace", "Change Needle", "Recalibrate", "Ignore", "Pause", "Fiducial", "Place With UpCam", "Change nozzle", "ERROR" };
             // apply changes to multiple placement types at once
             JobData_GridView.CellValueChanged += (o, e) => {
                 if (e.ColumnIndex != 3) return;
@@ -493,6 +496,10 @@ namespace LitePlacer {
             needleCalibrationHeight_textbox.Text = Properties.Settings.Default.focus_height.ToString(CultureInfo.InvariantCulture);
             pressureSenstorPresent_button.Checked = Properties.Settings.Default.pressure_sensor;
             vacuumDeltaADC_textbox.Text = Properties.Settings.Default.vacuumDeltaExpected.ToString();
+
+            checkBoxShowDebugInfo.Checked = Properties.Settings.Default.enableDebugInfo;
+            checkBoxLimitDebugLines.Checked = Properties.Settings.Default.enableDebugInfoLineLimit;
+            textBoxLimitDebugLines.Text = Properties.Settings.Default.debugInfoLineLimit;
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
@@ -1033,7 +1040,14 @@ namespace LitePlacer {
             cameraView.upSettings.FindCircles = true;
             Global.DoBackgroundWork(200);
             var loc = GoToClosestThing(Shapes.ShapeTypes.Circle, 20, .05, cameraView.upVideoProcessing);
-            if (loc != null) Locations.GetLocation("Up Camera").SetTo(loc.ToPartLocation());
+            if (loc != null)
+            {
+                Locations.GetLocation("Up Camera").SetTo(loc.ToPartLocation());
+            }
+            else
+            {
+                ShowSimpleMessageBox("Up camera zero calibration failed.");
+            }
             Global.GoTo("Up Camera"); //test
             cameraView.UpCameraReset();
             Cnc.Zup();
@@ -1110,7 +1124,7 @@ namespace LitePlacer {
 
         // TinyG communication monitor textbox  
         public void DisplayText(string txt, Color color) {
-            if (!IsShown) return;
+            if (!IsShown || !checkBoxShowDebugInfo.Checked) return;
             // XXX need to add robust mechanism to only show desired debugging messages
             if (!showTinyGComms_checkbox.Checked && (color.Equals(Color.Gray) || color.Equals(Color.Green))) return;
             try {
@@ -1125,6 +1139,15 @@ namespace LitePlacer {
                 SerialMonitor_richTextBox.AppendText(txt, color);
                 SerialMonitor_richTextBox.ScrollToCaret();
             } catch {
+            }
+
+           // int lines = SerialMonitor_richTextBox.GetFirstCharIndexFromLine(1);
+
+            if (checkBoxLimitDebugLines.Checked && (int.Parse(textBoxLimitDebugLines.Text) < ((int) SerialMonitor_richTextBox.Lines.Length))) {
+                do {
+                    SerialMonitor_richTextBox.Select(0, SerialMonitor_richTextBox.GetFirstCharIndexFromLine(1));
+                    SerialMonitor_richTextBox.SelectedText = "";
+                } while (int.Parse(textBoxLimitDebugLines.Text) < ((int) SerialMonitor_richTextBox.Lines.Length));
             }
         }
 
@@ -1947,7 +1970,13 @@ namespace LitePlacer {
 
         private void TestA_thread() {
             if (!Cnc.CNC_A(0)) return;
+            if (!Cnc.CNC_A(90)) return;
+            if (!Cnc.CNC_A(180)) return;
+            if (!Cnc.CNC_A(270)) return;
             if (!Cnc.CNC_A(360)) return;
+            if (!Cnc.CNC_A(270)) return;
+            if (!Cnc.CNC_A(180)) return;
+            if (!Cnc.CNC_A(90)) return;
             if (!Cnc.CNC_A(0)) return;
         }
 
@@ -2458,8 +2487,42 @@ namespace LitePlacer {
 
             foreach (var component in components) {
                 if (AbortPlacement) { return false; }
-                if (!PlaceComponent(component)) 
+
+                string tapeNozzle = Tapes.GetTapeObjByID(component.MethodParameters).Nozzle;
+
+                if (nozzleChanger.Enabled && (tapeNozzle == null))
+                {
+                    ShowSimpleMessageBox("No nozzle specified for tape, aborting.");
+                    return false;
+                }
+
+                if ((component.Method == "Place" || component.Method == "Place Fast") && nozzleChanger.Enabled && 
+                    (nozzleChanger.GetLoadedNozzle() == null || tapeNozzle != nozzleChanger.GetLoadedNozzle().Id))
+                {
+                    nozzleChanger.LoadNozzle(tapeNozzle);
+                    if (!CalibrateNeedle_m()) { return false;  }
+                }
+
+                if (!PlaceComponent(component)) {
+                    if (component.IsError)
+                    {
+                        foreach (var comp in components)
+                        {
+                            if (comp.MethodParameters == component.MethodParameters)
+                            {
+                                comp.IsError = true;
+                            }
+                        }
+                        for (int i = 0; i < JobData_GridView.Rows.Count; i++)
+                        {
+                            if (((JobData) JobData_GridView.Rows[i].DataBoundItem).MethodParameters == component.MethodParameters)
+                            {
+                                ((JobData)JobData_GridView.Rows[i].DataBoundItem).Method = "ERROR";
+                            }
+                        }
+                    }
                     if (!ignoreErrors_checkbox.Checked) return false;
+                }
             }
             return true;
         }
@@ -2559,6 +2622,9 @@ namespace LitePlacer {
 
                 case "Change nozzle":
                     nozzleChanger.LoadNozzle(comp.MethodParameters);
+                    break;
+
+                case "ERROR":
                     break;
 
                 default:
@@ -2859,6 +2925,8 @@ namespace LitePlacer {
                     if (win) break;
                 }
                 if (win) break;
+                if (Tapes.GetTapeObjByID(comp.MethodParameters).IsFeeder) { break; }
+
                 Tapes.GetTapeObjByID(comp.MethodParameters).IncrementPartNumber(); //try skipping a part
             }
             if (!win) {
@@ -3878,7 +3946,8 @@ namespace LitePlacer {
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e) {
-            Application.Exit();
+            this.Close();
+//            Environment.Exit(0);
         }
 
         private void rescalAllTapesForAvailablePartsToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -4632,33 +4701,11 @@ reinitialize:
 
         private void rowToTop_Button_Click(object sender, EventArgs e)
         {
-            /*            List<PhysicalComponent> toPlace = new List<PhysicalComponent>();
-                        for (int i = 0; i < selectedCount; i++)
-                        {
-                
-                            foreach (var component in job.GetComponents())
-                            {
-                                component.JobData = job;
-                                if (!toPlace.Contains(component)) toPlace.Add(component);
-                            }
-                            var t = job.ComponentList[row.Index];
-                            job.ComponentList.Remove(row.Index);
-                            job.ComponentList.Insert(job.ComponentList.Count, t);
-                        }*/
-
-            //            var job = (JobData)JobData_GridView.SelectedCells[i].OwningRow.DataBoundItem;
-            //JobData_GridView.SelectedCells[0].ow
-            //            foreach (DataGridViewRow row in JobData_GridView.SelectedCells.OwningRow.DataBoundItem;)
             for (int i = 0; i < JobData_GridView.SelectedRows.Count; i++)
             {
                 JobData j = (JobData) JobData_GridView.SelectedRows[i].DataBoundItem;
-                //var j = Cad.JobData[i];
                 Cad.JobData.Remove(j);
                 Cad.JobData.Insert(0, j);
-
-                //JobData_GridView.Rows.Remove(row);
-                //JobData_GridView.Rows.Insert(0, row);
-                //JobData_GridView
             }
             JobData_GridView.Update();
 
@@ -4713,14 +4760,8 @@ reinitialize:
             for (int i = 0; i < JobData_GridView.SelectedRows.Count; i++)
             {
                 JobData j = (JobData)JobData_GridView.SelectedRows[i].DataBoundItem;
-                //var j = Cad.JobData[i];
                 Cad.JobData.Remove(j);
                 Cad.JobData.Add(j); 
-                
-                /*var row = JobData_GridView.SelectedCells[i].OwningRow.Index;
-                var j = Cad.JobData[row];
-                Cad.JobData.Remove(j);
-                Cad.JobData.Add(j);*/
             }
             JobData_GridView.Update();
         }
@@ -4898,6 +4939,32 @@ reinitialize:
         Error:
             ShowSimpleMessageBox("Coordinate error");
             return;
+        }
+
+        private void checkBoxShowDebugInfo_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.enableDebugInfo = checkBoxShowDebugInfo.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void checkBoxLimitDebugLines_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.enableDebugInfoLineLimit = checkBoxLimitDebugLines.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void textBoxLimitDebugLines_TextChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.debugInfoLineLimit = textBoxLimitDebugLines.Text;
+        }
+
+        private void Tapes_dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+        }
+
+        private void textBoxSendtoTinyG_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }	// end of: 	public partial class FormMain : Form
 

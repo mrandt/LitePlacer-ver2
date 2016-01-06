@@ -114,8 +114,7 @@ namespace LitePlacer {
                 return true;
             }
         }
-       
-               
+
         public PhysicalComponent() {
            nominal.physicalComponent = this;
            machine.physicalComponent = this;

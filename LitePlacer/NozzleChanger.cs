@@ -248,6 +248,7 @@ namespace LitePlacer
             if (loadedNozzle != null)
             {
                 UnloadNozzle(loadedNozzle);
+                MainForm.DisplayText("Unloaded nozzle " + nozzle.Id, Color.Green);
             }
 
             Cnc.Zup();
@@ -271,6 +272,8 @@ namespace LitePlacer
             Cnc.Zup();
 
             nozzle.IsLoaded = true;
+
+            MainForm.DisplayText("Loaded nozzle " + nozzle.Id, Color.Green);
         }
 
         public void SetPosition(PartLocation loc)
@@ -287,6 +290,18 @@ namespace LitePlacer
             if (Grid.CurrentCell == null) return;
             Nozzle selected = (Nozzle)Grid.CurrentCell.OwningRow.DataBoundItem;
             selected.setPosition(nz.X, nz.Y, nz.Z);
+        }
+
+        public string[] getIDs()
+        {
+            string[] ret = new string[nozzles.Count];
+
+            for (int i = 0; i < nozzles.Count; i++)
+            {
+                ret[i] = nozzles[i].Id;
+            }
+
+            return ret;
         }
     }
 }

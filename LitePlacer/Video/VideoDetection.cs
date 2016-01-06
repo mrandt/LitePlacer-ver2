@@ -343,6 +343,9 @@ namespace LitePlacer {
         }
             
         public static List<T> GetWithin<T>(List<T> list, double distanceMM) where T : Shapes.Thing {
+            if (list == null) { 
+                return null; 
+            }
             list.RemoveAll(x => x == null);
             foreach (var x in list) {
                 x.ToMMResolution();

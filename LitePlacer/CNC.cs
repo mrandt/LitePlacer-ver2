@@ -16,7 +16,7 @@ namespace LitePlacer {
         public bool JoggingBusy;
         public bool AbortPlacement;
 
-        public bool Simulation = false;
+        public bool Simulation = true;
 
         private bool _Zguard = true;
         public void ZGuardOn() { _Zguard = true; }
@@ -57,6 +57,8 @@ namespace LitePlacer {
             if (Connected) Com.Close();
             Com.Open(name);
             _readyEvent.Set();
+
+            CNC_Write_m("{\"^x\":\"\"}");
             return Com.IsOpen;
         }
 
@@ -496,6 +498,7 @@ namespace LitePlacer {
             }
 
             if ((X != null || Y != null) && !CNC_MoveIsSafe_m(new PartLocation(X, Y))) return false;
+            if ((Z != null) && (Z > Properties.Settings.Default.ZDistanceToTable)) return false;
 
             // avoid moving if same position
             double _x, _y, _z, _a;

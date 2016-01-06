@@ -101,23 +101,25 @@ namespace LitePlacer {
 
         // will go to the nearest hole to the next part and display what it will pick up gooz
         public bool GoToNextComponent(TapeObj to) {
-            SetCurrentTapeMeasurement(to.TapeType); //setup tape type to measure
-
-            if (to.FirstPart != null) {
-                Cnc.CNC_XY(to.GetPartBasedLocation(to.CurrentPartIndex()));
-                return true;
-            }
-            if (to.FirstHole == null) {
-                MainForm.ShowSimpleMessageBox("First hole not set and part not set - calibrate this first");
-                return false;
-            }
-
             if (to.IsLocationBased)
             {
                 Cnc.CNC_XY(GetLocationBasedComponent(to));
             }
             else
             {
+                SetCurrentTapeMeasurement(to.TapeType); //setup tape type to measure
+
+                if (to.FirstPart != null)
+                {
+                    Cnc.CNC_XY(to.GetPartBasedLocation(to.CurrentPartIndex()));
+                    return true;
+                }
+                if (to.FirstHole == null)
+                {
+                    MainForm.ShowSimpleMessageBox("First hole not set and part not set - calibrate this first");
+                    return false;
+                }
+
                 MainForm.cameraView.downSettings.FindCircles = true;
                 // move to closest hole to the part we are looking for 
                 Cnc.CNC_XY(to.GetNearestCurrentPartHole());

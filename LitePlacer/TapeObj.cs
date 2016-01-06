@@ -67,6 +67,12 @@ namespace LitePlacer {
         private int currentPart;
         public int CurrentPart { get { return currentPart; } set { currentPart = value; Notify("NextPart"); } }
 
+        private bool isFeeder;
+        public bool IsFeeder { get { return isFeeder; } set { isFeeder = value; } }
+
+        private string nozzle;
+        public string Nozzle { get { return nozzle; } set { nozzle = value; } }
+
         public void Reset() {
             TapeType = "Paper";
             CurrentPart = 1;
