@@ -50,6 +50,13 @@ namespace LitePlacer {
             }
         }
 
+        private string nozzleId;
+        public string NozzleId
+        {
+            get { return nozzleId; }
+            set { nozzleId = value; Notify("Nozzle ID"); }
+        }
+
         private void UpdateComponents() {
             foreach (var x in _components) {
                 x.JobData = this;

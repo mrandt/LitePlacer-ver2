@@ -71,7 +71,11 @@ namespace LitePlacer
             this.HolePitch = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PartPitch = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HoleToPartX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.HoleToPartY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pickupZDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.placeZDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TapeAngle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tapeObjBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.Snapshot_button = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -274,6 +278,8 @@ namespace LitePlacer
             this.ignoreErrors_checkbox = new System.Windows.Forms.CheckBox();
             this.skippedPlacedComponents_checkBox = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.buttonMoveRowDown = new System.Windows.Forms.Button();
+            this.buttonMoveRowUp = new System.Windows.Forms.Button();
             this.rowToBottom_button = new System.Windows.Forms.Button();
             this.rowToTop_Button = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
@@ -295,9 +301,18 @@ namespace LitePlacer
             this.label86 = new System.Windows.Forms.Label();
             this.label85 = new System.Windows.Forms.Label();
             this.JobData_GridView = new System.Windows.Forms.DataGridView();
+            this.jobDataBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.Bottom_checkBox = new System.Windows.Forms.CheckBox();
             this.CadData_GridView = new System.Windows.Forms.DataGridView();
+            this.designatorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.footprintDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.xnominalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ynominalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rotationDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.methodDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isFiducialDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.physicalComponentBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AbortPlacement_button = new System.Windows.Forms.Button();
             this.PausePlacement_button = new System.Windows.Forms.Button();
             this.ReMeasure_button = new System.Windows.Forms.Button();
@@ -321,6 +336,10 @@ namespace LitePlacer
             this.pressureSenstorPresent_button = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.locations_dataGridView = new System.Windows.Forms.DataGridView();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.xDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.yDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.namedLocationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.locationSet_button = new System.Windows.Forms.Button();
             this.locationGoTo_button = new System.Windows.Forms.Button();
             this.locationDelete_button = new System.Windows.Forms.Button();
@@ -357,6 +376,7 @@ namespace LitePlacer
             this.button9 = new System.Windows.Forms.Button();
             this.label65 = new System.Windows.Forms.Label();
             this.dataGridGuards = new System.Windows.Forms.DataGridView();
+            this.idDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.V1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.X1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Y1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -364,13 +384,20 @@ namespace LitePlacer
             this.X2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Y2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.guardsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.visibilitygraphBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.textBoxNozzleSpeed = new System.Windows.Forms.TextBox();
             this.label64 = new System.Windows.Forms.Label();
             this.dataGridNozzes = new System.Windows.Forms.DataGridView();
             this.IsLoaded = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NozzleFilter = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.nozzleBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.datagridLoadSequence = new System.Windows.Forms.DataGridView();
+            this.xDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.yDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.zDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nozzleLocationsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.buttonNzLoadFromNeedle = new System.Windows.Forms.Button();
             this.buttonNzLoadFromCamera = new System.Windows.Forms.Button();
             this.label63 = new System.Windows.Forms.Label();
@@ -421,41 +448,18 @@ namespace LitePlacer
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.verticesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.nozzleBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.nozzleChangerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.partLocationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.countDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.componentListDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.componentTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.methodDataGridViewComboBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.methodParametersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.jobDataBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.designatorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.footprintDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.xnominalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ynominalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rotationDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.methodDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isFiducialDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.physicalComponentBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.HoleToPartY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pickupZDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.placeZDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tapeObjBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.xDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.yDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.namedLocationBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.idDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.visibilitygraphBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nozzleBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.xDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.yDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.zDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nozzleLocationsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.nozzleBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.nozzleChangerBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.partLocationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.NozzleId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Tapes_tabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Tapes_dataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tapeObjBindingSource)).BeginInit();
             this.groupBox12.SuspendLayout();
             this.tabPageBasicSetup.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -478,7 +482,9 @@ namespace LitePlacer
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.placement_Picturebox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.JobData_GridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.jobDataBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CadData_GridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.physicalComponentBindingSource)).BeginInit();
             this.tabControlPages.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -486,24 +492,21 @@ namespace LitePlacer
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.locations_dataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.namedLocationBindingSource)).BeginInit();
             this.groupBox7.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.NozzleChanger.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridGuards)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.guardsBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.visibilitygraphBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridNozzes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.datagridLoadSequence)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nozzleLocationsBindingSource)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.verticesBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.jobDataBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.physicalComponentBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tapeObjBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.namedLocationBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.visibilitygraphBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nozzleLocationsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleChangerBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.partLocationBindingSource)).BeginInit();
@@ -894,12 +897,38 @@ namespace LitePlacer
             this.HoleToPartX.Name = "HoleToPartX";
             this.HoleToPartX.Width = 70;
             // 
+            // HoleToPartY
+            // 
+            this.HoleToPartY.DataPropertyName = "HoleToPartSpacingY";
+            this.HoleToPartY.HeaderText = "HoleToPartY";
+            this.HoleToPartY.Name = "HoleToPartY";
+            this.HoleToPartY.ReadOnly = true;
+            this.HoleToPartY.Width = 70;
+            // 
+            // pickupZDataGridViewTextBoxColumn
+            // 
+            this.pickupZDataGridViewTextBoxColumn.DataPropertyName = "PickupZ";
+            this.pickupZDataGridViewTextBoxColumn.HeaderText = "PickupZ";
+            this.pickupZDataGridViewTextBoxColumn.Name = "pickupZDataGridViewTextBoxColumn";
+            this.pickupZDataGridViewTextBoxColumn.Width = 50;
+            // 
+            // placeZDataGridViewTextBoxColumn
+            // 
+            this.placeZDataGridViewTextBoxColumn.DataPropertyName = "PlaceZ";
+            this.placeZDataGridViewTextBoxColumn.HeaderText = "PlaceZ";
+            this.placeZDataGridViewTextBoxColumn.Name = "placeZDataGridViewTextBoxColumn";
+            this.placeZDataGridViewTextBoxColumn.Width = 50;
+            // 
             // TapeAngle
             // 
             this.TapeAngle.DataPropertyName = "TapeAngle";
             this.TapeAngle.HeaderText = "Angle";
             this.TapeAngle.Name = "TapeAngle";
             this.TapeAngle.ReadOnly = true;
+            // 
+            // tapeObjBindingSource
+            // 
+            this.tapeObjBindingSource.DataSource = typeof(LitePlacer.TapeObj);
             // 
             // Snapshot_button
             // 
@@ -3126,6 +3155,8 @@ namespace LitePlacer
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.buttonMoveRowDown);
+            this.groupBox2.Controls.Add(this.buttonMoveRowUp);
             this.groupBox2.Controls.Add(this.rowToBottom_button);
             this.groupBox2.Controls.Add(this.rowToTop_Button);
             this.groupBox2.Controls.Add(this.button6);
@@ -3135,14 +3166,36 @@ namespace LitePlacer
             this.groupBox2.Controls.Add(this.PlaceAll_button);
             this.groupBox2.Location = new System.Drawing.Point(10, 268);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(250, 136);
+            this.groupBox2.Size = new System.Drawing.Size(250, 188);
             this.groupBox2.TabIndex = 51;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Row Operations";
             // 
+            // buttonMoveRowDown
+            // 
+            this.buttonMoveRowDown.Location = new System.Drawing.Point(133, 159);
+            this.buttonMoveRowDown.Name = "buttonMoveRowDown";
+            this.buttonMoveRowDown.Size = new System.Drawing.Size(111, 23);
+            this.buttonMoveRowDown.TabIndex = 156;
+            this.buttonMoveRowDown.Text = "Move Down";
+            this.toolTip1.SetToolTip(this.buttonMoveRowDown, "Adds a new row");
+            this.buttonMoveRowDown.UseVisualStyleBackColor = true;
+            this.buttonMoveRowDown.Click += new System.EventHandler(this.buttonMoveRowDown_Click);
+            // 
+            // buttonMoveRowUp
+            // 
+            this.buttonMoveRowUp.Location = new System.Drawing.Point(10, 159);
+            this.buttonMoveRowUp.Name = "buttonMoveRowUp";
+            this.buttonMoveRowUp.Size = new System.Drawing.Size(111, 23);
+            this.buttonMoveRowUp.TabIndex = 155;
+            this.buttonMoveRowUp.Text = "Move Up";
+            this.toolTip1.SetToolTip(this.buttonMoveRowUp, "Adds a new row");
+            this.buttonMoveRowUp.UseVisualStyleBackColor = true;
+            this.buttonMoveRowUp.Click += new System.EventHandler(this.buttonMoveRowUp_Click);
+            // 
             // rowToBottom_button
             // 
-            this.rowToBottom_button.Location = new System.Drawing.Point(11, 106);
+            this.rowToBottom_button.Location = new System.Drawing.Point(135, 130);
             this.rowToBottom_button.Name = "rowToBottom_button";
             this.rowToBottom_button.Size = new System.Drawing.Size(110, 23);
             this.rowToBottom_button.TabIndex = 53;
@@ -3153,7 +3206,7 @@ namespace LitePlacer
             // 
             // rowToTop_Button
             // 
-            this.rowToTop_Button.Location = new System.Drawing.Point(11, 77);
+            this.rowToTop_Button.Location = new System.Drawing.Point(10, 130);
             this.rowToTop_Button.Name = "rowToTop_Button";
             this.rowToTop_Button.Size = new System.Drawing.Size(110, 23);
             this.rowToTop_Button.TabIndex = 52;
@@ -3164,7 +3217,7 @@ namespace LitePlacer
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(135, 77);
+            this.button6.Location = new System.Drawing.Point(133, 19);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(109, 23);
             this.button6.TabIndex = 51;
@@ -3175,7 +3228,7 @@ namespace LitePlacer
             // 
             // NewRow_button
             // 
-            this.NewRow_button.Location = new System.Drawing.Point(11, 19);
+            this.NewRow_button.Location = new System.Drawing.Point(11, 101);
             this.NewRow_button.Name = "NewRow_button";
             this.NewRow_button.Size = new System.Drawing.Size(110, 23);
             this.NewRow_button.TabIndex = 22;
@@ -3186,7 +3239,7 @@ namespace LitePlacer
             // 
             // DeleteComponentGroup_button
             // 
-            this.DeleteComponentGroup_button.Location = new System.Drawing.Point(11, 48);
+            this.DeleteComponentGroup_button.Location = new System.Drawing.Point(135, 101);
             this.DeleteComponentGroup_button.Name = "DeleteComponentGroup_button";
             this.DeleteComponentGroup_button.Size = new System.Drawing.Size(110, 23);
             this.DeleteComponentGroup_button.TabIndex = 16;
@@ -3197,7 +3250,7 @@ namespace LitePlacer
             // 
             // autoMapJob_button
             // 
-            this.autoMapJob_button.Location = new System.Drawing.Point(134, 19);
+            this.autoMapJob_button.Location = new System.Drawing.Point(13, 48);
             this.autoMapJob_button.Name = "autoMapJob_button";
             this.autoMapJob_button.Size = new System.Drawing.Size(110, 23);
             this.autoMapJob_button.TabIndex = 50;
@@ -3207,7 +3260,7 @@ namespace LitePlacer
             // 
             // PlaceAll_button
             // 
-            this.PlaceAll_button.Location = new System.Drawing.Point(135, 48);
+            this.PlaceAll_button.Location = new System.Drawing.Point(12, 19);
             this.PlaceAll_button.Name = "PlaceAll_button";
             this.PlaceAll_button.Size = new System.Drawing.Size(109, 23);
             this.PlaceAll_button.TabIndex = 20;
@@ -3244,9 +3297,9 @@ namespace LitePlacer
             this.groupBox1.Controls.Add(this.PlacedComponent_label);
             this.groupBox1.Controls.Add(this.label66);
             this.groupBox1.Controls.Add(this.label58);
-            this.groupBox1.Location = new System.Drawing.Point(10, 410);
+            this.groupBox1.Location = new System.Drawing.Point(10, 462);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(250, 230);
+            this.groupBox1.Size = new System.Drawing.Size(250, 178);
             this.groupBox1.TabIndex = 50;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Placement Details";
@@ -3254,7 +3307,7 @@ namespace LitePlacer
             // PCBOffset_label
             // 
             this.PCBOffset_label.AutoSize = true;
-            this.PCBOffset_label.Location = new System.Drawing.Point(7, 58);
+            this.PCBOffset_label.Location = new System.Drawing.Point(7, 34);
             this.PCBOffset_label.Name = "PCBOffset_label";
             this.PCBOffset_label.Size = new System.Drawing.Size(59, 13);
             this.PCBOffset_label.TabIndex = 39;
@@ -3263,7 +3316,7 @@ namespace LitePlacer
             // placement_Picturebox
             // 
             this.placement_Picturebox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.placement_Picturebox.Location = new System.Drawing.Point(45, 89);
+            this.placement_Picturebox.Location = new System.Drawing.Point(45, 50);
             this.placement_Picturebox.Name = "placement_Picturebox";
             this.placement_Picturebox.Size = new System.Drawing.Size(149, 119);
             this.placement_Picturebox.TabIndex = 51;
@@ -3272,7 +3325,7 @@ namespace LitePlacer
             // PlacedValue_label
             // 
             this.PlacedValue_label.AutoSize = true;
-            this.PlacedValue_label.Location = new System.Drawing.Point(95, 37);
+            this.PlacedValue_label.Location = new System.Drawing.Point(212, 16);
             this.PlacedValue_label.Name = "PlacedValue_label";
             this.PlacedValue_label.Size = new System.Drawing.Size(13, 13);
             this.PlacedValue_label.TabIndex = 33;
@@ -3281,7 +3334,7 @@ namespace LitePlacer
             // PlacedComponent_label
             // 
             this.PlacedComponent_label.AutoSize = true;
-            this.PlacedComponent_label.Location = new System.Drawing.Point(95, 16);
+            this.PlacedComponent_label.Location = new System.Drawing.Point(81, 16);
             this.PlacedComponent_label.Name = "PlacedComponent_label";
             this.PlacedComponent_label.Size = new System.Drawing.Size(13, 13);
             this.PlacedComponent_label.TabIndex = 29;
@@ -3290,7 +3343,7 @@ namespace LitePlacer
             // label66
             // 
             this.label66.AutoSize = true;
-            this.label66.Location = new System.Drawing.Point(6, 37);
+            this.label66.Location = new System.Drawing.Point(123, 16);
             this.label66.Name = "label66";
             this.label66.Size = new System.Drawing.Size(86, 13);
             this.label66.TabIndex = 28;
@@ -3363,7 +3416,8 @@ namespace LitePlacer
             this.componentListDataGridViewTextBoxColumn,
             this.componentTypeDataGridViewTextBoxColumn,
             this.methodDataGridViewComboBoxColumn,
-            this.methodParametersDataGridViewTextBoxColumn});
+            this.methodParametersDataGridViewTextBoxColumn,
+            this.NozzleId});
             this.JobData_GridView.DataSource = this.jobDataBindingSource;
             this.JobData_GridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.JobData_GridView.Location = new System.Drawing.Point(266, 310);
@@ -3375,6 +3429,10 @@ namespace LitePlacer
             this.JobData_GridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.JobData_GridView_CellClick);
             this.JobData_GridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.JobData_GridView_CellContentClick);
             this.JobData_GridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.EndEditModeForTapeSelection);
+            // 
+            // jobDataBindingSource
+            // 
+            this.jobDataBindingSource.DataSource = typeof(LitePlacer.JobData);
             // 
             // Bottom_checkBox
             // 
@@ -3422,11 +3480,59 @@ namespace LitePlacer
             this.CadData_GridView.Size = new System.Drawing.Size(805, 228);
             this.CadData_GridView.TabIndex = 5;
             // 
+            // designatorDataGridViewTextBoxColumn
+            // 
+            this.designatorDataGridViewTextBoxColumn.DataPropertyName = "Designator";
+            this.designatorDataGridViewTextBoxColumn.HeaderText = "Designator";
+            this.designatorDataGridViewTextBoxColumn.Name = "designatorDataGridViewTextBoxColumn";
+            // 
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.DataPropertyName = "Type";
             this.dataGridViewTextBoxColumn1.HeaderText = "Type";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            // 
+            // footprintDataGridViewTextBoxColumn
+            // 
+            this.footprintDataGridViewTextBoxColumn.DataPropertyName = "Footprint";
+            this.footprintDataGridViewTextBoxColumn.HeaderText = "Footprint";
+            this.footprintDataGridViewTextBoxColumn.Name = "footprintDataGridViewTextBoxColumn";
+            // 
+            // xnominalDataGridViewTextBoxColumn
+            // 
+            this.xnominalDataGridViewTextBoxColumn.DataPropertyName = "X_nominal";
+            this.xnominalDataGridViewTextBoxColumn.HeaderText = "X_nominal";
+            this.xnominalDataGridViewTextBoxColumn.Name = "xnominalDataGridViewTextBoxColumn";
+            // 
+            // ynominalDataGridViewTextBoxColumn
+            // 
+            this.ynominalDataGridViewTextBoxColumn.DataPropertyName = "Y_nominal";
+            this.ynominalDataGridViewTextBoxColumn.HeaderText = "Y_nominal";
+            this.ynominalDataGridViewTextBoxColumn.Name = "ynominalDataGridViewTextBoxColumn";
+            // 
+            // rotationDataGridViewTextBoxColumn
+            // 
+            this.rotationDataGridViewTextBoxColumn.DataPropertyName = "Rotation";
+            this.rotationDataGridViewTextBoxColumn.HeaderText = "Rotation";
+            this.rotationDataGridViewTextBoxColumn.Name = "rotationDataGridViewTextBoxColumn";
+            // 
+            // methodDataGridViewTextBoxColumn
+            // 
+            this.methodDataGridViewTextBoxColumn.DataPropertyName = "Method";
+            this.methodDataGridViewTextBoxColumn.HeaderText = "Method";
+            this.methodDataGridViewTextBoxColumn.Name = "methodDataGridViewTextBoxColumn";
+            // 
+            // isFiducialDataGridViewCheckBoxColumn
+            // 
+            this.isFiducialDataGridViewCheckBoxColumn.DataPropertyName = "IsFiducial";
+            this.isFiducialDataGridViewCheckBoxColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.isFiducialDataGridViewCheckBoxColumn.HeaderText = "IsFiducial";
+            this.isFiducialDataGridViewCheckBoxColumn.Name = "isFiducialDataGridViewCheckBoxColumn";
+            this.isFiducialDataGridViewCheckBoxColumn.ReadOnly = true;
+            // 
+            // physicalComponentBindingSource
+            // 
+            this.physicalComponentBindingSource.DataSource = typeof(LitePlacer.PhysicalComponent);
             // 
             // AbortPlacement_button
             // 
@@ -3713,6 +3819,31 @@ namespace LitePlacer
             this.locations_dataGridView.Size = new System.Drawing.Size(274, 436);
             this.locations_dataGridView.TabIndex = 1;
             this.locations_dataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.locations_dataGridView_CellBeginEdit);
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // xDataGridViewTextBoxColumn
+            // 
+            this.xDataGridViewTextBoxColumn.DataPropertyName = "X";
+            this.xDataGridViewTextBoxColumn.HeaderText = "X";
+            this.xDataGridViewTextBoxColumn.Name = "xDataGridViewTextBoxColumn";
+            this.xDataGridViewTextBoxColumn.Width = 60;
+            // 
+            // yDataGridViewTextBoxColumn
+            // 
+            this.yDataGridViewTextBoxColumn.DataPropertyName = "Y";
+            this.yDataGridViewTextBoxColumn.HeaderText = "Y";
+            this.yDataGridViewTextBoxColumn.Name = "yDataGridViewTextBoxColumn";
+            this.yDataGridViewTextBoxColumn.Width = 60;
+            // 
+            // namedLocationBindingSource
+            // 
+            this.namedLocationBindingSource.DataSource = typeof(LitePlacer.NamedLocation);
             // 
             // locationSet_button
             // 
@@ -4163,6 +4294,14 @@ namespace LitePlacer
             this.dataGridGuards.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridGuards_CellValueChanged);
             this.dataGridGuards.Paint += new System.Windows.Forms.PaintEventHandler(this.dataGridGuards_Paint_1);
             // 
+            // idDataGridViewTextBoxColumn1
+            // 
+            this.idDataGridViewTextBoxColumn1.DataPropertyName = "Id";
+            this.idDataGridViewTextBoxColumn1.HeaderText = "Id";
+            this.idDataGridViewTextBoxColumn1.Name = "idDataGridViewTextBoxColumn1";
+            this.idDataGridViewTextBoxColumn1.ReadOnly = true;
+            this.idDataGridViewTextBoxColumn1.Width = 40;
+            // 
             // V1
             // 
             this.V1.HeaderText = "V1";
@@ -4205,6 +4344,10 @@ namespace LitePlacer
             // 
             this.guardsBindingSource.DataMember = "Guards";
             this.guardsBindingSource.DataSource = this.visibilitygraphBindingSource;
+            // 
+            // visibilitygraphBindingSource
+            // 
+            this.visibilitygraphBindingSource.DataSource = typeof(LitePlacer.visibilitygraph);
             // 
             // pictureBox1
             // 
@@ -4258,11 +4401,21 @@ namespace LitePlacer
             this.IsLoaded.HeaderText = "Is loaded";
             this.IsLoaded.Name = "IsLoaded";
             // 
+            // idDataGridViewTextBoxColumn
+            // 
+            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
+            this.idDataGridViewTextBoxColumn.HeaderText = "Id";
+            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            // 
             // NozzleFilter
             // 
             this.NozzleFilter.DataPropertyName = "NozzleFilter";
             this.NozzleFilter.HeaderText = "Nozzle Filter";
             this.NozzleFilter.Name = "NozzleFilter";
+            // 
+            // nozzleBindingSource
+            // 
+            this.nozzleBindingSource.DataSource = typeof(LitePlacer.Nozzle);
             // 
             // datagridLoadSequence
             // 
@@ -4278,6 +4431,29 @@ namespace LitePlacer
             this.datagridLoadSequence.Size = new System.Drawing.Size(345, 166);
             this.datagridLoadSequence.TabIndex = 11;
             this.datagridLoadSequence.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.datagridLoadSequence_CellValueChanged);
+            // 
+            // xDataGridViewTextBoxColumn1
+            // 
+            this.xDataGridViewTextBoxColumn1.DataPropertyName = "X";
+            this.xDataGridViewTextBoxColumn1.HeaderText = "X";
+            this.xDataGridViewTextBoxColumn1.Name = "xDataGridViewTextBoxColumn1";
+            this.xDataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // yDataGridViewTextBoxColumn1
+            // 
+            this.yDataGridViewTextBoxColumn1.DataPropertyName = "Y";
+            this.yDataGridViewTextBoxColumn1.HeaderText = "Y";
+            this.yDataGridViewTextBoxColumn1.Name = "yDataGridViewTextBoxColumn1";
+            // 
+            // zDataGridViewTextBoxColumn
+            // 
+            this.zDataGridViewTextBoxColumn.DataPropertyName = "Z";
+            this.zDataGridViewTextBoxColumn.HeaderText = "Z";
+            this.zDataGridViewTextBoxColumn.Name = "zDataGridViewTextBoxColumn";
+            // 
+            // nozzleLocationsBindingSource
+            // 
+            this.nozzleLocationsBindingSource.DataSource = typeof(LitePlacer.nozzleLocations);
             // 
             // buttonNzLoadFromNeedle
             // 
@@ -4409,14 +4585,14 @@ namespace LitePlacer
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 955);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1437, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1284, 22);
             this.statusStrip1.TabIndex = 115;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(109, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
             // menuStrip1
@@ -4429,7 +4605,7 @@ namespace LitePlacer
             this.jobOperationsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1437, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1284, 24);
             this.menuStrip1.TabIndex = 116;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -4443,44 +4619,44 @@ namespace LitePlacer
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadJobFileToolStripMenuItem
             // 
             this.loadJobFileToolStripMenuItem.Name = "loadJobFileToolStripMenuItem";
-            this.loadJobFileToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.loadJobFileToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.loadJobFileToolStripMenuItem.Text = "Load Job File";
             this.loadJobFileToolStripMenuItem.Click += new System.EventHandler(this.loadJobFileToolStripMenuItem_Click);
             // 
             // saveJobFileToolStripMenuItem
             // 
             this.saveJobFileToolStripMenuItem.Name = "saveJobFileToolStripMenuItem";
-            this.saveJobFileToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.saveJobFileToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.saveJobFileToolStripMenuItem.Text = "Save Job File";
             this.saveJobFileToolStripMenuItem.Click += new System.EventHandler(this.saveJobFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(188, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
             // 
             // loadCADFileToolStripMenuItem
             // 
             this.loadCADFileToolStripMenuItem.Name = "loadCADFileToolStripMenuItem";
-            this.loadCADFileToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.loadCADFileToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.loadCADFileToolStripMenuItem.Text = "Load Pick-n-Place File";
             this.loadCADFileToolStripMenuItem.Click += new System.EventHandler(this.loadCADFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(173, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -4491,34 +4667,34 @@ namespace LitePlacer
             this.loadUserDefaultsToolStripMenuItem,
             this.saveUserDefaultsToolStripMenuItem});
             this.tinyGToolStripMenuItem.Name = "tinyGToolStripMenuItem";
-            this.tinyGToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.tinyGToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.tinyGToolStripMenuItem.Text = "TinyG";
             // 
             // resetToDefaultsToolStripMenuItem
             // 
             this.resetToDefaultsToolStripMenuItem.Name = "resetToDefaultsToolStripMenuItem";
-            this.resetToDefaultsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.resetToDefaultsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.resetToDefaultsToolStripMenuItem.Text = "Reset To Built-In Defaults";
             this.resetToDefaultsToolStripMenuItem.Click += new System.EventHandler(this.resetToDefaultsToolStripMenuItem_Click);
             // 
             // loadUserDefaultsToolStripMenuItem
             // 
             this.loadUserDefaultsToolStripMenuItem.Name = "loadUserDefaultsToolStripMenuItem";
-            this.loadUserDefaultsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.loadUserDefaultsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.loadUserDefaultsToolStripMenuItem.Text = "Load User Defaults";
             this.loadUserDefaultsToolStripMenuItem.Click += new System.EventHandler(this.loadUserDefaultsToolStripMenuItem_Click);
             // 
             // saveUserDefaultsToolStripMenuItem
             // 
             this.saveUserDefaultsToolStripMenuItem.Name = "saveUserDefaultsToolStripMenuItem";
-            this.saveUserDefaultsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.saveUserDefaultsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.saveUserDefaultsToolStripMenuItem.Text = "Save User Defaults";
             this.saveUserDefaultsToolStripMenuItem.Click += new System.EventHandler(this.saveUserDefaultsToolStripMenuItem_Click);
             // 
             // goToLocationToolStripMenuItem
             // 
             this.goToLocationToolStripMenuItem.Name = "goToLocationToolStripMenuItem";
-            this.goToLocationToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
+            this.goToLocationToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
             this.goToLocationToolStripMenuItem.Text = "GoTo Location";
             // 
             // tapeToolStripMenuItem
@@ -4538,91 +4714,91 @@ namespace LitePlacer
             this.toolStripSeparator5,
             this.pickupMultipleComponentsToolStripMenuItem});
             this.tapeToolStripMenuItem.Name = "tapeToolStripMenuItem";
-            this.tapeToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
+            this.tapeToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.tapeToolStripMenuItem.Text = "Tape";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.saveToolStripMenuItem.Text = "Save Default";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // reLoadToolStripMenuItem
             // 
             this.reLoadToolStripMenuItem.Name = "reLoadToolStripMenuItem";
-            this.reLoadToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.reLoadToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.reLoadToolStripMenuItem.Text = "ReLoad Default";
             this.reLoadToolStripMenuItem.Click += new System.EventHandler(this.reLoadToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.saveAsToolStripMenuItem.Text = "Save As ...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.loadToolStripMenuItem.Text = "Load ...";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(255, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(241, 6);
             // 
             // resetAllPickupZsToolStripMenuItem
             // 
             this.resetAllPickupZsToolStripMenuItem.Name = "resetAllPickupZsToolStripMenuItem";
-            this.resetAllPickupZsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.resetAllPickupZsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.resetAllPickupZsToolStripMenuItem.Text = "Reset All Pickup Zs";
             this.resetAllPickupZsToolStripMenuItem.Click += new System.EventHandler(this.resetAllPickupZsToolStripMenuItem_Click);
             // 
             // resetAllPlaceZsToolStripMenuItem
             // 
             this.resetAllPlaceZsToolStripMenuItem.Name = "resetAllPlaceZsToolStripMenuItem";
-            this.resetAllPlaceZsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.resetAllPlaceZsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.resetAllPlaceZsToolStripMenuItem.Text = "Reset All Place Zs";
             this.resetAllPlaceZsToolStripMenuItem.Click += new System.EventHandler(this.resetAllPlaceZsToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(255, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(241, 6);
             // 
             // takePhotosOfComponentsToolStripMenuItem
             // 
             this.takePhotosOfComponentsToolStripMenuItem.Name = "takePhotosOfComponentsToolStripMenuItem";
-            this.takePhotosOfComponentsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.takePhotosOfComponentsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.takePhotosOfComponentsToolStripMenuItem.Text = "Take Photos Of Components";
             this.takePhotosOfComponentsToolStripMenuItem.Click += new System.EventHandler(this.takePhotosOfComponentsToolStripMenuItem_Click);
             // 
             // quickAddMultipleTapesToolStripMenuItem
             // 
             this.quickAddMultipleTapesToolStripMenuItem.Name = "quickAddMultipleTapesToolStripMenuItem";
-            this.quickAddMultipleTapesToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.quickAddMultipleTapesToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.quickAddMultipleTapesToolStripMenuItem.Text = "Quick Add Multiple Tapes";
             this.quickAddMultipleTapesToolStripMenuItem.Click += new System.EventHandler(this.tapesQuickAdd_button_Click);
             // 
             // rescalAllTapesForAvailablePartsToolStripMenuItem
             // 
             this.rescalAllTapesForAvailablePartsToolStripMenuItem.Name = "rescalAllTapesForAvailablePartsToolStripMenuItem";
-            this.rescalAllTapesForAvailablePartsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.rescalAllTapesForAvailablePartsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.rescalAllTapesForAvailablePartsToolStripMenuItem.Text = "Rescal All Tapes For Available Parts";
             this.rescalAllTapesForAvailablePartsToolStripMenuItem.Click += new System.EventHandler(this.rescalAllTapesForAvailablePartsToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(255, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(241, 6);
             // 
             // pickupMultipleComponentsToolStripMenuItem
             // 
             this.pickupMultipleComponentsToolStripMenuItem.Name = "pickupMultipleComponentsToolStripMenuItem";
-            this.pickupMultipleComponentsToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.pickupMultipleComponentsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.pickupMultipleComponentsToolStripMenuItem.Text = "Pickup Multiple Components";
             this.pickupMultipleComponentsToolStripMenuItem.Click += new System.EventHandler(this.pickupMultipleComponentsToolStripMenuItem_Click);
             // 
@@ -4631,13 +4807,13 @@ namespace LitePlacer
             this.jobOperationsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.resetAllPlacedComponentsToolStripMenuItem});
             this.jobOperationsToolStripMenuItem.Name = "jobOperationsToolStripMenuItem";
-            this.jobOperationsToolStripMenuItem.Size = new System.Drawing.Size(98, 20);
+            this.jobOperationsToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
             this.jobOperationsToolStripMenuItem.Text = "Job Operations";
             // 
             // resetAllPlacedComponentsToolStripMenuItem
             // 
             this.resetAllPlacedComponentsToolStripMenuItem.Name = "resetAllPlacedComponentsToolStripMenuItem";
-            this.resetAllPlacedComponentsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.resetAllPlacedComponentsToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.resetAllPlacedComponentsToolStripMenuItem.Text = "Reset All Placed Components";
             this.resetAllPlacedComponentsToolStripMenuItem.Click += new System.EventHandler(this.resetAllPlacedComponentsToolStripMenuItem_Click);
             // 
@@ -4688,6 +4864,18 @@ namespace LitePlacer
             this.verticesBindingSource.DataMember = "Vertices";
             this.verticesBindingSource.DataSource = this.visibilitygraphBindingSource;
             // 
+            // nozzleBindingSource1
+            // 
+            this.nozzleBindingSource1.DataSource = typeof(LitePlacer.Nozzle);
+            // 
+            // nozzleChangerBindingSource
+            // 
+            this.nozzleChangerBindingSource.DataSource = typeof(LitePlacer.NozzleChanger);
+            // 
+            // partLocationBindingSource
+            // 
+            this.partLocationBindingSource.DataSource = typeof(LitePlacer.PartLocation);
+            // 
             // countDataGridViewTextBoxColumn
             // 
             this.countDataGridViewTextBoxColumn.DataPropertyName = "Count";
@@ -4710,6 +4898,7 @@ namespace LitePlacer
             this.componentTypeDataGridViewTextBoxColumn.HeaderText = "ComponentType";
             this.componentTypeDataGridViewTextBoxColumn.Name = "componentTypeDataGridViewTextBoxColumn";
             this.componentTypeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.componentTypeDataGridViewTextBoxColumn.Width = 90;
             // 
             // methodDataGridViewComboBoxColumn
             // 
@@ -4720,6 +4909,7 @@ namespace LitePlacer
             this.methodDataGridViewComboBoxColumn.Name = "methodDataGridViewComboBoxColumn";
             this.methodDataGridViewComboBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.methodDataGridViewComboBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.methodDataGridViewComboBoxColumn.Width = 60;
             // 
             // methodParametersDataGridViewTextBoxColumn
             // 
@@ -4727,172 +4917,20 @@ namespace LitePlacer
             this.methodParametersDataGridViewTextBoxColumn.HeaderText = "MethodParameters";
             this.methodParametersDataGridViewTextBoxColumn.Name = "methodParametersDataGridViewTextBoxColumn";
             // 
-            // jobDataBindingSource
+            // NozzleId
             // 
-            this.jobDataBindingSource.DataSource = typeof(LitePlacer.JobData);
-            // 
-            // designatorDataGridViewTextBoxColumn
-            // 
-            this.designatorDataGridViewTextBoxColumn.DataPropertyName = "Designator";
-            this.designatorDataGridViewTextBoxColumn.HeaderText = "Designator";
-            this.designatorDataGridViewTextBoxColumn.Name = "designatorDataGridViewTextBoxColumn";
-            // 
-            // footprintDataGridViewTextBoxColumn
-            // 
-            this.footprintDataGridViewTextBoxColumn.DataPropertyName = "Footprint";
-            this.footprintDataGridViewTextBoxColumn.HeaderText = "Footprint";
-            this.footprintDataGridViewTextBoxColumn.Name = "footprintDataGridViewTextBoxColumn";
-            // 
-            // xnominalDataGridViewTextBoxColumn
-            // 
-            this.xnominalDataGridViewTextBoxColumn.DataPropertyName = "X_nominal";
-            this.xnominalDataGridViewTextBoxColumn.HeaderText = "X_nominal";
-            this.xnominalDataGridViewTextBoxColumn.Name = "xnominalDataGridViewTextBoxColumn";
-            // 
-            // ynominalDataGridViewTextBoxColumn
-            // 
-            this.ynominalDataGridViewTextBoxColumn.DataPropertyName = "Y_nominal";
-            this.ynominalDataGridViewTextBoxColumn.HeaderText = "Y_nominal";
-            this.ynominalDataGridViewTextBoxColumn.Name = "ynominalDataGridViewTextBoxColumn";
-            // 
-            // rotationDataGridViewTextBoxColumn
-            // 
-            this.rotationDataGridViewTextBoxColumn.DataPropertyName = "Rotation";
-            this.rotationDataGridViewTextBoxColumn.HeaderText = "Rotation";
-            this.rotationDataGridViewTextBoxColumn.Name = "rotationDataGridViewTextBoxColumn";
-            // 
-            // methodDataGridViewTextBoxColumn
-            // 
-            this.methodDataGridViewTextBoxColumn.DataPropertyName = "Method";
-            this.methodDataGridViewTextBoxColumn.HeaderText = "Method";
-            this.methodDataGridViewTextBoxColumn.Name = "methodDataGridViewTextBoxColumn";
-            // 
-            // isFiducialDataGridViewCheckBoxColumn
-            // 
-            this.isFiducialDataGridViewCheckBoxColumn.DataPropertyName = "IsFiducial";
-            this.isFiducialDataGridViewCheckBoxColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.isFiducialDataGridViewCheckBoxColumn.HeaderText = "IsFiducial";
-            this.isFiducialDataGridViewCheckBoxColumn.Name = "isFiducialDataGridViewCheckBoxColumn";
-            this.isFiducialDataGridViewCheckBoxColumn.ReadOnly = true;
-            // 
-            // physicalComponentBindingSource
-            // 
-            this.physicalComponentBindingSource.DataSource = typeof(LitePlacer.PhysicalComponent);
-            // 
-            // HoleToPartY
-            // 
-            this.HoleToPartY.DataPropertyName = "HoleToPartSpacingY";
-            this.HoleToPartY.HeaderText = "HoleToPartY";
-            this.HoleToPartY.Name = "HoleToPartY";
-            this.HoleToPartY.ReadOnly = true;
-            this.HoleToPartY.Width = 70;
-            // 
-            // pickupZDataGridViewTextBoxColumn
-            // 
-            this.pickupZDataGridViewTextBoxColumn.DataPropertyName = "PickupZ";
-            this.pickupZDataGridViewTextBoxColumn.HeaderText = "PickupZ";
-            this.pickupZDataGridViewTextBoxColumn.Name = "pickupZDataGridViewTextBoxColumn";
-            this.pickupZDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // placeZDataGridViewTextBoxColumn
-            // 
-            this.placeZDataGridViewTextBoxColumn.DataPropertyName = "PlaceZ";
-            this.placeZDataGridViewTextBoxColumn.HeaderText = "PlaceZ";
-            this.placeZDataGridViewTextBoxColumn.Name = "placeZDataGridViewTextBoxColumn";
-            this.placeZDataGridViewTextBoxColumn.Width = 50;
-            // 
-            // tapeObjBindingSource
-            // 
-            this.tapeObjBindingSource.DataSource = typeof(LitePlacer.TapeObj);
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // xDataGridViewTextBoxColumn
-            // 
-            this.xDataGridViewTextBoxColumn.DataPropertyName = "X";
-            this.xDataGridViewTextBoxColumn.HeaderText = "X";
-            this.xDataGridViewTextBoxColumn.Name = "xDataGridViewTextBoxColumn";
-            this.xDataGridViewTextBoxColumn.Width = 60;
-            // 
-            // yDataGridViewTextBoxColumn
-            // 
-            this.yDataGridViewTextBoxColumn.DataPropertyName = "Y";
-            this.yDataGridViewTextBoxColumn.HeaderText = "Y";
-            this.yDataGridViewTextBoxColumn.Name = "yDataGridViewTextBoxColumn";
-            this.yDataGridViewTextBoxColumn.Width = 60;
-            // 
-            // namedLocationBindingSource
-            // 
-            this.namedLocationBindingSource.DataSource = typeof(LitePlacer.NamedLocation);
-            // 
-            // idDataGridViewTextBoxColumn1
-            // 
-            this.idDataGridViewTextBoxColumn1.DataPropertyName = "Id";
-            this.idDataGridViewTextBoxColumn1.HeaderText = "Id";
-            this.idDataGridViewTextBoxColumn1.Name = "idDataGridViewTextBoxColumn1";
-            this.idDataGridViewTextBoxColumn1.ReadOnly = true;
-            this.idDataGridViewTextBoxColumn1.Width = 40;
-            // 
-            // visibilitygraphBindingSource
-            // 
-            this.visibilitygraphBindingSource.DataSource = typeof(LitePlacer.visibilitygraph);
-            // 
-            // idDataGridViewTextBoxColumn
-            // 
-            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
-            this.idDataGridViewTextBoxColumn.HeaderText = "Id";
-            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
-            // 
-            // nozzleBindingSource
-            // 
-            this.nozzleBindingSource.DataSource = typeof(LitePlacer.Nozzle);
-            // 
-            // xDataGridViewTextBoxColumn1
-            // 
-            this.xDataGridViewTextBoxColumn1.DataPropertyName = "X";
-            this.xDataGridViewTextBoxColumn1.HeaderText = "X";
-            this.xDataGridViewTextBoxColumn1.Name = "xDataGridViewTextBoxColumn1";
-            this.xDataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // yDataGridViewTextBoxColumn1
-            // 
-            this.yDataGridViewTextBoxColumn1.DataPropertyName = "Y";
-            this.yDataGridViewTextBoxColumn1.HeaderText = "Y";
-            this.yDataGridViewTextBoxColumn1.Name = "yDataGridViewTextBoxColumn1";
-            // 
-            // zDataGridViewTextBoxColumn
-            // 
-            this.zDataGridViewTextBoxColumn.DataPropertyName = "Z";
-            this.zDataGridViewTextBoxColumn.HeaderText = "Z";
-            this.zDataGridViewTextBoxColumn.Name = "zDataGridViewTextBoxColumn";
-            // 
-            // nozzleLocationsBindingSource
-            // 
-            this.nozzleLocationsBindingSource.DataSource = typeof(LitePlacer.nozzleLocations);
-            // 
-            // nozzleBindingSource1
-            // 
-            this.nozzleBindingSource1.DataSource = typeof(LitePlacer.Nozzle);
-            // 
-            // nozzleChangerBindingSource
-            // 
-            this.nozzleChangerBindingSource.DataSource = typeof(LitePlacer.NozzleChanger);
-            // 
-            // partLocationBindingSource
-            // 
-            this.partLocationBindingSource.DataSource = typeof(LitePlacer.PartLocation);
+            this.NozzleId.DataPropertyName = "NozzleId";
+            this.NozzleId.HeaderText = "NozzleId";
+            this.NozzleId.Name = "NozzleId";
+            this.NozzleId.ReadOnly = true;
+            this.NozzleId.Width = 60;
             // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1454, 784);
+            this.ClientSize = new System.Drawing.Size(1300, 784);
             this.Controls.Add(this.smallDebugWindow);
             this.Controls.Add(this.PausePlacement_button);
             this.Controls.Add(this.AbortPlacement_button);
@@ -4943,6 +4981,7 @@ namespace LitePlacer
             this.Tapes_tabPage.ResumeLayout(false);
             this.Tapes_tabPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Tapes_dataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tapeObjBindingSource)).EndInit();
             this.groupBox12.ResumeLayout(false);
             this.groupBox12.PerformLayout();
             this.tabPageBasicSetup.ResumeLayout(false);
@@ -4979,7 +5018,9 @@ namespace LitePlacer
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.placement_Picturebox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.JobData_GridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.jobDataBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CadData_GridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.physicalComponentBindingSource)).EndInit();
             this.tabControlPages.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
@@ -4990,6 +5031,7 @@ namespace LitePlacer
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.locations_dataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.namedLocationBindingSource)).EndInit();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -4998,21 +5040,17 @@ namespace LitePlacer
             this.NozzleChanger.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridGuards)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.guardsBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.visibilitygraphBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridNozzes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.datagridLoadSequence)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nozzleLocationsBindingSource)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.verticesBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.jobDataBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.physicalComponentBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tapeObjBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.namedLocationBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.visibilitygraphBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nozzleLocationsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleBindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nozzleChangerBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.partLocationBindingSource)).EndInit();
@@ -5339,11 +5377,6 @@ namespace LitePlacer
         private ToolStripMenuItem resetAllPlaceZsToolStripMenuItem;
         private CheckBox ignoreErrors_checkbox;
         private ToolStripStatusLabel toolStripStatusLabel1;
-        private DataGridViewTextBoxColumn countDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn componentListDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn componentTypeDataGridViewTextBoxColumn;
-        private DataGridViewComboBoxColumn methodDataGridViewComboBoxColumn;
-        private DataGridViewTextBoxColumn methodParametersDataGridViewTextBoxColumn;
         private PictureBox placement_Picturebox;
         private GroupBox groupBox3;
         private ToolStripMenuItem takePhotosOfComponentsToolStripMenuItem;
@@ -5444,6 +5477,14 @@ namespace LitePlacer
         private DataGridViewTextBoxColumn pickupZDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn placeZDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn TapeAngle;
+        private Button buttonMoveRowDown;
+        private Button buttonMoveRowUp;
+        private DataGridViewTextBoxColumn countDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn componentListDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn componentTypeDataGridViewTextBoxColumn;
+        private DataGridViewComboBoxColumn methodDataGridViewComboBoxColumn;
+        private DataGridViewTextBoxColumn methodParametersDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn NozzleId;
     }
 }
 

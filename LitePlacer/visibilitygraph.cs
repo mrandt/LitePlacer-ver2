@@ -282,24 +282,32 @@ namespace LitePlacer
             Pen penTb = new Pen(Color.Blue);
             penTb.Width = 2;
 
-            graphicsObject.Clear(Color.White);
-            // doesn't account for the 5px starting point correctly
-            graphicsObject.DrawRectangle(penTb, new Rectangle(5, 5, (int) (xMax * graphicsScale), (int) (yMax * graphicsScale)+5));
+            try
+            {
+                graphicsObject.Clear(Color.White);
+                // doesn't account for the 5px starting point correctly
+                graphicsObject.DrawRectangle(penTb, new Rectangle(5, 5, (int)(xMax * graphicsScale), (int)(yMax * graphicsScale) + 5));
 
-            Pen penTyg = new Pen(Color.YellowGreen);
-            penTyg.Width = 2;
-            graphicsObject.DrawLine(penTyg, 5, (int)(yMax * graphicsScale) + 15, 5, (int) (yMax * graphicsScale) + 5);
-            graphicsObject.DrawLine(penTyg, 0, (int)(yMax * graphicsScale) + 10, 10, (int)(yMax * graphicsScale) + 10);
-            
-            Pen PenTr = new Pen(Color.Red);
+                Pen penTyg = new Pen(Color.YellowGreen);
+                penTyg.Width = 2;
+                graphicsObject.DrawLine(penTyg, 5, (int)(yMax * graphicsScale) + 15, 5, (int)(yMax * graphicsScale) + 5);
+                graphicsObject.DrawLine(penTyg, 0, (int)(yMax * graphicsScale) + 10, 10, (int)(yMax * graphicsScale) + 10);
 
-            if (Guards == null) { return true;  }
-            foreach (Guard guard in Guards) {
-                if (guard.Validated)
+                Pen PenTr = new Pen(Color.Red);
+
+                if (Guards == null) { return true; }
+                foreach (Guard guard in Guards)
                 {
-                    graphicsObject.DrawLine(PenTr, 5 + (int)(guard.VerticeS.X * graphicsScale), ((int)((yMax - guard.VerticeS.Y) * graphicsScale) + 10),
-                       5 + (int)(guard.VerticeE.X * graphicsScale), ((int)((yMax - guard.VerticeE.Y) * graphicsScale) + 10));
+                    if (guard.Validated)
+                    {
+                        graphicsObject.DrawLine(PenTr, 5 + (int)(guard.VerticeS.X * graphicsScale), ((int)((yMax - guard.VerticeS.Y) * graphicsScale) + 10),
+                           5 + (int)(guard.VerticeE.X * graphicsScale), ((int)((yMax - guard.VerticeE.Y) * graphicsScale) + 10));
+                    }
                 }
+            }
+            catch
+            {
+                return false;
             }
 
             return true;

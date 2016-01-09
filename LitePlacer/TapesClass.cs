@@ -68,7 +68,10 @@ namespace LitePlacer {
         public TapeObj GetTapeObjByID(string id) {
             if (id == null) return null;
             foreach (var x in tapeObjs) {
-                if (x.ID != null && x.ID.Equals(id)) return x;
+                if (x.ID != null && x.ID.Equals(id))
+                {
+                    return x;
+                }
             }
             return null;
         }
@@ -567,6 +570,11 @@ namespace LitePlacer {
             double YHoleToSpacing = Math.Abs(t.HoleToPartSpacingY) * Math.Cos(TapeAngle) + Math.Abs(t.HoleToPartSpacingX) * Math.Sin(TapeAngle);
 
             t.AvailableParts.Clear();
+            if (t.PartPitch <= 0)
+            {
+                MainForm.ShowSimpleMessageBox("Part pitch not set, aborting");
+                return false;
+            }
 
             NamedLocation ReturnLocation;
             for (int i = 0; i < (Math.Round(t.LastHole.DistanceTo(t.FirstHole) / t.PartPitch)); i++)
@@ -582,6 +590,7 @@ namespace LitePlacer {
 
             }
 
+            t.IsFeeder = false;
             t.IsFullyCalibrated = true;
             t.IsLocationBased = true;
             return true;
@@ -613,6 +622,7 @@ namespace LitePlacer {
 
             t.IsFullyCalibrated = true;
             t.IsLocationBased = true;
+            t.IsFeeder = true;
 
             return true;
         }

@@ -2231,6 +2231,20 @@ namespace LitePlacer {
                 Cad.JobData.Clear();
                 JobData_GridView.Rows.Clear();
                 Cad.JobData.AddRange(Global.DeSerialization<SortableBindingList<JobData>>(filename));
+                
+                TapeObj tape;
+                foreach (JobData jobdata in Cad.JobData)
+                {
+                    if (jobdata.Method == "Place" || jobdata.Method == "Place Fast")
+                    {
+                        tape = Tapes.GetTapeObjByID(jobdata.MethodParameters);
+                        if (tape != null)
+                        {
+                            jobdata.NozzleId = tape.Nozzle;
+                        }
+                    }
+                }
+
                 JobData_GridView.DataSource = Cad.JobData;
             } catch (Exception ex) {
                 ShowSimpleMessageBox("Can't Load Job File " + Path.GetFileName(filename) + " : " + ex);
@@ -2499,6 +2513,7 @@ namespace LitePlacer {
             foreach (var component in components) {
                 if (AbortPlacement) { return false; }
 
+                if (component.MethodParameters == null) { return false; }
                 string tapeNozzle = Tapes.GetTapeObjByID(component.MethodParameters).Nozzle;
 
                 if (nozzleChanger.Enabled && (tapeNozzle == null))
@@ -2751,8 +2766,8 @@ namespace LitePlacer {
             int p1 = 0;
             if (PressureSensorPresent) {
                 VacuumOn();
-                Thread.Sleep(1000);
-                p1 = Cnc.GetADC();
+                Thread.Sleep(500);
+                p1 = Cnc.GetADC(setting.vacuumDeltaExpected);
                 p1_label.Text = p1.ToString();
                 VacuumOff();
                 DisplayText("Vacuum Pressure W/O Part = " + p1);
@@ -2776,7 +2791,7 @@ namespace LitePlacer {
             if (!Cnc.Zup()) return false;
 
             if (PressureSensorPresent) {
-                int p2 = Cnc.GetADC();
+                int p2 = Cnc.GetADC(setting.vacuumDeltaExpected);
                 p2_label.Text = p2.ToString() + " (Delta = " + (p1 - p2) + ")";
                 DisplayText("Vacuum Pressure W/  Part = " + p2 + "  (" + Math.Abs(p1 - p2) + ") change");
                 if (Math.Abs(p1 - p2) < setting.vacuumDeltaExpected) {
@@ -2784,7 +2799,7 @@ namespace LitePlacer {
                     Tapes.PickupFailed(TapeID);
                     DisplayText("Pressure sensor detected failed pickup", Color.Red);
                     VacuumOff();
-                    PumpOff();
+                    //PumpOff();
                     //tape.PickupZ = -1; //reset pickupZ 
                     return false;
                 }
@@ -2936,7 +2951,9 @@ namespace LitePlacer {
                     if (win) break;
                 }
                 if (win) break;
-                if (Tapes.GetTapeObjByID(comp.MethodParameters).IsFeeder) { break; }
+                if (Tapes.GetTapeObjByID(comp.MethodParameters).IsFeeder) { 
+                    break; 
+                }
 
                 Tapes.GetTapeObjByID(comp.MethodParameters).IncrementPartNumber(); //try skipping a part
             }
@@ -4744,9 +4761,16 @@ reinitialize:
             int value;
             do
             {
-                value = Cnc.GetADC();
-                DisplayText("ADC Value " + value.ToString());
-                Thread.Sleep(500);
+                Cnc.CNC_RawWrite("{\"gc\":\"M09\"}");
+                Thread.Sleep(10);
+                value = Cnc.GetADC(setting.vacuumDeltaExpected);
+                DisplayText("ADC Value " + value.ToString() + " with solenoid closed.");
+
+                Cnc.CNC_RawWrite("{\"gc\":\"M08\"}");
+                Thread.Sleep(10);
+                value = Cnc.GetADC(setting.vacuumDeltaExpected);
+                DisplayText("ADC Value " + value.ToString() + " with solenoid open.");
+
                 Application.DoEvents();
             } while (testingADC);
         }
@@ -4976,6 +5000,39 @@ reinitialize:
         private void textBoxSendtoTinyG_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void buttonMoveRowUp_Click(object sender, EventArgs e)
+        {
+            int index=0;
+            for (int i = 0; i < JobData_GridView.SelectedRows.Count; i++)
+            {
+                JobData j = (JobData)JobData_GridView.SelectedRows[i].DataBoundItem;
+                index = JobData_GridView.SelectedRows[i].Index;
+                if (index > 0) { index -= 1; }
+                Cad.JobData.Remove(j);
+                Cad.JobData.Insert(index,j);
+            }
+            JobData_GridView.Update();
+            JobData_GridView.ClearSelection();
+            JobData_GridView.Rows[index].Selected = true;
+        }
+
+        private void buttonMoveRowDown_Click(object sender, EventArgs e)
+        {
+            int index=0;
+            for (int i = 0; i < JobData_GridView.SelectedRows.Count; i++)
+            {
+                JobData j = (JobData)JobData_GridView.SelectedRows[i].DataBoundItem;
+                index = JobData_GridView.SelectedRows[i].Index;
+                //if (index < Cad.JobData.Count) { index += 1; }
+                index += 1;
+                Cad.JobData.Remove(j);
+                Cad.JobData.Insert(index, j);
+            }
+            JobData_GridView.Update();
+            JobData_GridView.ClearSelection();
+            JobData_GridView.Rows[index].Selected = true;
         }
     }	// end of: 	public partial class FormMain : Form
 
