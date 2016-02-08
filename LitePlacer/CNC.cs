@@ -29,7 +29,8 @@ namespace LitePlacer {
         private readonly SlackCompensationManager SlackCompensationZ = new SlackCompensationManager() { RequiredDistance = 1 };
         private readonly SlackCompensationManager SlackCompensationA = new SlackCompensationManager() { RequiredDistance = 30 };
 
-        static ManualResetEventSlim _readyEvent = new ManualResetEventSlim(false);
+//        static ManualResetEventSlim _readyEvent = new ManualResetEventSlim(false);
+        static ManualResetEvent _readyEvent = new ManualResetEvent(false);
 
         public void ShowSimpleMessageBox(string msg) {
             Global.Instance.mainForm.ShowSimpleMessageBox(msg);
@@ -57,6 +58,7 @@ namespace LitePlacer {
             if (Connected) Com.Close();
             Com.Open(name);
             _readyEvent.Set();
+
             return Com.IsOpen;
         }
 
@@ -183,6 +185,7 @@ namespace LitePlacer {
 
             if (line.Contains("SYSTEM READY")) {
                 Close();
+                MainForm.AbortPlacement = true;
                 MainForm.ShowMessageBox(
                     "TinyG Reset.",
                     "System Reset",
@@ -206,6 +209,7 @@ namespace LitePlacer {
                 // Close();
                 MainForm.UpdateCncConnectionStatus();
                 MainForm.ShowSimpleMessageBox("TinyG Error : " + o["er"]["msg"]);
+                MainForm.AbortPlacement = true;
                 return;
             }
 
@@ -372,9 +376,55 @@ namespace LitePlacer {
 
         //-------- ADC ----------------
         public int _ADC_RESULT;
-        public int GetADC() {
-            if (!CNC_Write_m("{\"adc0\":\"\"}")) return -1;
-            return _ADC_RESULT;
+        public int GetADC()
+        {
+            return GetADC(50);
+        }
+        
+        public int GetADC(int vacuumDelta) {
+            //result = 0, 
+            int average = 15, tryCount = 0, retries = 3;
+            //int[] results = new int[average];
+
+            List<int> results = new List<int>();
+            do {
+                results.Clear();
+                for (int i = 0; i < average; i++)
+                {
+                    if (!CNC_Write_m_nowait("{\"adc0\":\"\"}")) return -1;
+                    //result += _ADC_RESULT;
+                    //results[i] = _ADC_RESULT;
+                    results.Add(_ADC_RESULT);
+                }
+
+                //Array.Sort(results);
+                results.Sort();
+
+                int averager = results[average /2];
+                //for (int i = 0; i < average; i++)
+                int j = 0;
+                do
+                {
+                    if ((results[j] < (averager - vacuumDelta)) ||
+                        (results[j] > (averager + vacuumDelta)))
+                    {
+                        results.Remove(results[j]);
+                        j--;
+                    }
+                    j++;
+                } while (j < results.Count);
+                tryCount++;
+            } while ((results.Count < (average / 2)) || (tryCount > retries));
+            if (tryCount>retries) { return -1; }
+
+            int final = 0;
+            foreach (int result in results) {
+                final += result;
+            }
+            final /= results.Count;
+                //return (result / average);
+                //return _ADC_RESULT;
+            return final;
         }
 
         // =================================================================================
@@ -394,7 +444,12 @@ namespace LitePlacer {
             CNC_LastWriteStatus = -1;
             _readyEvent.Reset();
             Com.Write(cmd);
-            _readyEvent.Wait();
+            //_readyEvent.Wait();
+            if (!_readyEvent.WaitOne(30000))
+            {
+                ShowSimpleMessageBox("Error writing to TinyG");
+                return;
+            }
             CNC_BlockingWriteDone = true;
         }
 
@@ -403,6 +458,13 @@ namespace LitePlacer {
 
         public bool CNC_SetValue(string para, int value) {
             return CNC_Write_m("{\""+para+"\":" + value + "}");
+        }
+
+
+        void doStuff(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Application.DoEvents();
+            return;
         }
 
         public bool CNC_Write_m(string s, int Timeout = 250) {
@@ -416,12 +478,52 @@ namespace LitePlacer {
             t.IsBackground = true;
             t.Start();
 
+//            System.Timers.Timer timer = new System.Timers.Timer(25);
+//            timer.Elapsed += new System.Timers.ElapsedEventHandler(doStuff);
+//            timer.Enabled=true;
+
             int i = 0;
             while (!CNC_BlockingWriteDone) {
                 Thread.Sleep(2);
                 Application.DoEvents();
                 i++;
-                if (i > Timeout) {
+                if (i > (Timeout*10)) {
+                    _readyEvent.Set();  // terminates the CNC_BlockingWrite_thread
+                    Global.Instance.mainForm.ShowMessageBox(
+                        "Debug: CNC_BlockingWrite: Timeout on command " + s,
+                        "Timeout",
+                        MessageBoxButtons.OK);
+                    CNC_BlockingWriteDone = true;
+                    JoggingBusy = false;
+                    //timer.Enabled = false;
+                    return false;
+                }
+            }
+//            timer.Enabled = false;
+
+            return true;
+        }
+
+        public bool CNC_Write_m_nowait(string s, int Timeout = 250)
+        {
+            if (!Com.IsOpen)
+            {
+                MainForm.DisplayText("** PORT CLOSED ** Ignoring command " + s, Color.Red);
+                return false;
+            }
+            CNC_BlockingWriteDone = false;
+            Thread t = new Thread(() => CNC_BlockingWrite_thread(s));
+            t.Name = "CNC_BlockingWrite";
+            t.IsBackground = true;
+            t.Start();
+
+            int i = 0;
+            while (!CNC_BlockingWriteDone)
+            {
+                Thread.Sleep(2);
+                i++;
+                if (i > (Timeout*10))
+                {
                     _readyEvent.Set();  // terminates the CNC_BlockingWrite_thread
                     Global.Instance.mainForm.ShowMessageBox(
                         "Debug: CNC_BlockingWrite: Timeout on command " + s,
@@ -489,36 +591,105 @@ namespace LitePlacer {
             }
 
             if ((X != null || Y != null) && !CNC_MoveIsSafe_m(new PartLocation(X, Y))) return false;
+            if ((Z != null) && (Z > Properties.Settings.Default.ZDistanceToTable)) return false;
 
+            // avoid moving if same position
+            double _x, _y, _z, _a;
+            if (X != null) { _x = Math.Round((double)X, 2); } else { _x = Math.Round(CurrentX, 2);  }
+            if (Y != null) { _y = Math.Round((double)Y, 2); } else { _y = Math.Round(CurrentY, 2); }
+            if (Z != null) { _z = Math.Round((double)Z, 2); } else { _z = Math.Round(CurrentZ, 2); }
+            if (A != null) { _a = Math.Round((double)A, 2); } else { _a = Math.Round(CurrentA, 2); }
+
+            if ((Math.Round(CurrentX, 2) == _x) && (Math.Round(CurrentY, 2) == _y) &&
+                (Math.Round(CurrentZ, 2) == _z) && (Math.Round(CurrentA, 2) == _a)) { 
+                return true;  
+            }
 
             if (!Connected && !Simulation) {
                 ShowSimpleMessageBox("CNC_XY: Cnc not connected");
                 return false;
             }
-
-            CNC_BlockingWriteDone = false;
-            Thread t = new Thread(() => CNC_BlockingMove_thread(X, Y, Z, A)) {
-                Name = "CNC_BlockingMove",
-                IsBackground = true
-            };
-            t.Start();
-
             int i = 0;
-            while (!CNC_BlockingWriteDone) {
-                Thread.Sleep(2);
-                Application.DoEvents();
-                i++;
-                if (i > CNC_MoveTimeout) {
-                    _readyEvent.Set();   // causes CNC_Blocking_thread to exit
+
+            if (MainForm.VisibilityGraph.Enabled && !(X == null && Y == null))
+            {
+                if (X == null) { X = CurrentX; }
+                if (Y == null) { Y = CurrentY; }
+
+                List<Vertice> goLocations = null;
+                MainForm.VisibilityGraph.checkVisibles(new Vertice(CurrentX, CurrentY), new Vertice((double) X, (double) Y), out goLocations);
+
+                foreach (Vertice loc in goLocations) {
+                    CNC_BlockingWriteDone = false;
+                    if (loc != goLocations[goLocations.Count-1]) {
+                        Thread t = new Thread(() => CNC_BlockingMove_thread(loc.X, loc.Y, null, null)) {
+                            Name = "CNC_BlockingMove",
+                            IsBackground = true
+                        };
+                        t.Start();
+                    }
+                    else
+                    {
+                        Thread t = new Thread(() => CNC_BlockingMove_thread(loc.X, loc.Y, Z, A)) {
+                            Name = "CNC_BlockingMove",
+                            IsBackground = true
+                        };
+                        t.Start();
+                    }
+ 
+
+                    while (!CNC_BlockingWriteDone)
+                    {
+                        Thread.Sleep(2);
+                        Application.DoEvents();
+                        i++;
+                        if (i > CNC_MoveTimeout)
+                        {
+                            _readyEvent.Set();   // causes CNC_Blocking_thread to exit
+                        }
+                    }
+
+                    CNC_BlockingWriteDone = true;
+                    if ((i > CNC_MoveTimeout) && Connected)
+                    {
+                        Global.Instance.mainForm.ShowSimpleMessageBox("CNC: Timeout / Cnc connection cut!");
+                        Close();
+                        Global.Instance.mainForm.UpdateCncConnectionStatus();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                CNC_BlockingWriteDone = false;
+                Thread t = new Thread(() => CNC_BlockingMove_thread(X, Y, Z, A))
+                {
+                    Name = "CNC_BlockingMove",
+                    IsBackground = true
+                };
+                t.Start();
+
+                while (!CNC_BlockingWriteDone)
+                {
+                    Thread.Sleep(2);
+                    Application.DoEvents();
+                    i++;
+                    if (i > CNC_MoveTimeout)
+                    {
+                        _readyEvent.Set();   // causes CNC_Blocking_thread to exit
+                    }
+                }
+
+                CNC_BlockingWriteDone = true;
+                if ((i > CNC_MoveTimeout) && Connected)
+                {
+                    Global.Instance.mainForm.ShowSimpleMessageBox("CNC: Timeout / Cnc connection cut!");
+                    Close();
+                    Global.Instance.mainForm.UpdateCncConnectionStatus();
                 }
             }
 
-            CNC_BlockingWriteDone = true;
-            if ((i > CNC_MoveTimeout) && Connected) {
-                Global.Instance.mainForm.ShowSimpleMessageBox("CNC: Timeout / Cnc connection cut!");
-                Close();
-                Global.Instance.mainForm.UpdateCncConnectionStatus();
-            }
+
             return (Connected);
         }
 
@@ -533,7 +704,7 @@ namespace LitePlacer {
             if (Simulation) { return; }
             _readyEvent.Reset();
             Com.Write("{\"gc\":\"" + "G0 " + cmd + "\"}");
-            _readyEvent.Wait();
+            _readyEvent.WaitOne(30000);
         }
 
         private void Tx_G1(int? speed, string cmd) {
@@ -544,7 +715,7 @@ namespace LitePlacer {
             _readyEvent.Reset();
             string F = (speed == null) ? "" : "F" + ((int)speed).ToString();
             Com.Write("{\"gc\":\"" + "G1 " + F + " " + cmd + "\"}");
-            _readyEvent.Wait();
+            _readyEvent.WaitOne(30000);
         }
 
         private double MinAMovement(double A) {
@@ -580,12 +751,14 @@ namespace LitePlacer {
             if (Z != null)
             {
                 double zTravel = ((double) Z) - Properties.Settings.Default.zTravelTotalZ;
-                if (Properties.Settings.Default.zTravelTotalZ != 0) {
+                if ((Properties.Settings.Default.zTravelTotalZ != 0) && (Z != CurrentZ)) {
                     if (X == null) { X = CurrentX; }
                     if (Y == null) { Y = CurrentY; }
- 
-                    X = X + (Properties.Settings.Default.zTravelXCompensation / Properties.Settings.Default.zTravelTotalZ * Z);
-                    Y = Y + (Properties.Settings.Default.zTravelYCompensation / Properties.Settings.Default.zTravelTotalZ * Z);
+
+                    double zMove = ((double) Z) - CurrentZ;
+
+                    X = X + (Properties.Settings.Default.zTravelXCompensation / Properties.Settings.Default.zTravelTotalZ * zMove);
+                    Y = Y + (Properties.Settings.Default.zTravelYCompensation / Properties.Settings.Default.zTravelTotalZ * zMove);
                     LastMoveZAdjusted = true;
                 }
             }
@@ -644,6 +817,20 @@ namespace LitePlacer {
             if (Z != null) { setCurrZ((double)Z); }
         }
 
+        public nozzleLocations GetCurrentPositionRelativeToZ() {
+            nozzleLocations r = new nozzleLocations();
+            
+            r.X = CurrentX - (Properties.Settings.Default.zTravelXCompensation / Properties.Settings.Default.zTravelTotalZ * CurrentZ);
+            r.Y = CurrentY - (Properties.Settings.Default.zTravelYCompensation / Properties.Settings.Default.zTravelTotalZ * CurrentZ);
+            r.Z = CurrentZ;
+
+            return r;
+        }
+
+        public double TranslateToTrueX(double X, double Y)
+        {
+            return X - Y * SquareCorrection;
+        } 
 
     }  // end Class CNC
 

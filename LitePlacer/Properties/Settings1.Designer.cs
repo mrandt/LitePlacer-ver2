@@ -653,5 +653,51 @@ namespace LitePlacer.Properties {
                 this["zTravelTotalZ"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("true")]
+        public bool enableDebugInfo
+        {
+            get
+            {
+                return ((bool)(this["enableDebugInfo"]));
+            }
+            set
+            {
+                this["enableDebugInfo"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("false")]
+        public bool enableDebugInfoLineLimit
+        {
+            get
+            {
+                return ((bool)(this["enableDebugInfoLineLimit"]));
+            }
+            set
+            {
+                this["enableDebugInfoLineLimit"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public string debugInfoLineLimit
+        {
+            get
+            {
+                return ((string)(this["debugInfoLineLimit"]));
+            }
+            set
+            {
+                this["debugInfoLineLimit"] = value;
+            }
+        }
+
     }
 }

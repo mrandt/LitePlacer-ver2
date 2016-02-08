@@ -49,12 +49,12 @@ namespace LitePlacer {
         }
 
         public void DisplayText(string text, Color color) {
-            if (mainForm == null) throw new Exception("mainform not set");
+            if (mainForm == null) { return; } // throw new Exception("mainform not set");
             mainForm.DisplayText(text, color);
         }
 
         public void DisplayText(string text) {
-            if (mainForm == null) throw new Exception("mainform not set");
+            if (mainForm == null) { return; } // throw new Exception("mainform not set");
             mainForm.DisplayText(text);
         }
 

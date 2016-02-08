@@ -68,7 +68,10 @@ namespace LitePlacer {
         public TapeObj GetTapeObjByID(string id) {
             if (id == null) return null;
             foreach (var x in tapeObjs) {
-                if (x.ID != null && x.ID.Equals(id)) return x;
+                if (x.ID != null && x.ID.Equals(id))
+                {
+                    return x;
+                }
             }
             return null;
         }
@@ -101,23 +104,25 @@ namespace LitePlacer {
 
         // will go to the nearest hole to the next part and display what it will pick up gooz
         public bool GoToNextComponent(TapeObj to) {
-            SetCurrentTapeMeasurement(to.TapeType); //setup tape type to measure
-
-            if (to.FirstPart != null) {
-                Cnc.CNC_XY(to.GetPartBasedLocation(to.CurrentPartIndex()));
-                return true;
-            }
-            if (to.FirstHole == null) {
-                MainForm.ShowSimpleMessageBox("First hole not set and part not set - calibrate this first");
-                return false;
-            }
-
             if (to.IsLocationBased)
             {
                 Cnc.CNC_XY(GetLocationBasedComponent(to));
             }
             else
             {
+                SetCurrentTapeMeasurement(to.TapeType); //setup tape type to measure
+
+                if (to.FirstPart != null)
+                {
+                    Cnc.CNC_XY(to.GetPartBasedLocation(to.CurrentPartIndex()));
+                    return true;
+                }
+                if (to.FirstHole == null)
+                {
+                    MainForm.ShowSimpleMessageBox("First hole not set and part not set - calibrate this first");
+                    return false;
+                }
+
                 MainForm.cameraView.downSettings.FindCircles = true;
                 // move to closest hole to the part we are looking for 
                 Cnc.CNC_XY(to.GetNearestCurrentPartHole());
@@ -259,19 +264,32 @@ namespace LitePlacer {
 
         public bool PopulateAvailableParts(TapeObj x) {
             if (x.FirstHole == null) return false; // currently only handling hole-calibrated harts
-            if (x.TemplateFilename == null || !File.Exists(x.TemplateFilename) ) return false;
             MainForm.Cnc.SlackCompensation = false;
             SetCurrentTapeMeasurement(x.TapeType);
 
             //find out the max number of parts
             int i = 0;
+            PartLocation loc;
+            PartLocation addloc = new PartLocation(x.HoleToPartSpacingX, x.HoleToPartSpacingY).Rotate(x.TapeOrientation.ToRadians());
+
+            x.AvailableParts.Clear();
             while (true) {
-                if (!MainForm.Cnc.CNC_XY(x.GetHoleLocation(i))) { MainForm.Cnc.SlackCompensation = true; return false; }
+                loc = x.GetHoleLocation(i);
+                if (!MainForm.Cnc.CNC_XY(loc)) { MainForm.Cnc.SlackCompensation = true; return false; }
                 var thing = VideoDetection.FindClosest(MainForm.cameraView.downVideoProcessing, Shapes.ShapeTypes.Circle, 1, 3);
                 if (thing == null) break;
+                
+                if (x.TemplateFilename == null || !File.Exists(x.TemplateFilename))
+                {
+                    loc += addloc;
+                    x.AvailableParts.Add(new NamedLocation(loc, i.ToString()));
+                    Global.Instance.mainForm.DisplayText("Adding part "+ i.ToString() +" to "+x.ID);
+                }
+
                 if (Cnc.AbortPlacement) { MainForm.Cnc.SlackCompensation = true; return false; }
                 i++;
             }
+            if (x.TemplateFilename == null || !File.Exists(x.TemplateFilename) && i>0) return true;
 
             MainForm.cameraView.SetDownCameraFunctionSet("ComponentPhoto");
 
@@ -430,6 +448,9 @@ namespace LitePlacer {
                 }
             }
             MainForm.ShowSimpleMessageBox("Couldn't Find corresponding part");
+        
+        
+        
         }
 
         public void TakePhotoOfPartAtCurrentLocation(TapeObj t) {
@@ -549,6 +570,11 @@ namespace LitePlacer {
             double YHoleToSpacing = Math.Abs(t.HoleToPartSpacingY) * Math.Cos(TapeAngle) + Math.Abs(t.HoleToPartSpacingX) * Math.Sin(TapeAngle);
 
             t.AvailableParts.Clear();
+            if (t.PartPitch <= 0)
+            {
+                MainForm.ShowSimpleMessageBox("Part pitch not set, aborting");
+                return false;
+            }
 
             NamedLocation ReturnLocation;
             for (int i = 0; i < (Math.Round(t.LastHole.DistanceTo(t.FirstHole) / t.PartPitch)); i++)
@@ -564,6 +590,7 @@ namespace LitePlacer {
 
             }
 
+            t.IsFeeder = false;
             t.IsFullyCalibrated = true;
             t.IsLocationBased = true;
             return true;
@@ -571,7 +598,8 @@ namespace LitePlacer {
 
         public bool SetAsFeeder(TapeObj t)
         {
-            string input = Microsoft.VisualBasic.Interaction.InputBox("Number of components on reel", "Reel size", "Default", -1, -1);
+            string input = Microsoft.VisualBasic.Interaction.InputBox("Number of components on reel", "Reel size", "5000", -1, -1);
+            if (input == "") { return false;  }
             int reelSize = int.Parse(input);
 
             if (reelSize < 1) { return false; };
@@ -594,6 +622,7 @@ namespace LitePlacer {
 
             t.IsFullyCalibrated = true;
             t.IsLocationBased = true;
+            t.IsFeeder = true;
 
             return true;
         }

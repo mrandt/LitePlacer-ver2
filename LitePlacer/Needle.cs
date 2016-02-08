@@ -15,6 +15,7 @@ namespace LitePlacer {
         public List<NeedlePoint> CalibrationPoints = new List<NeedlePoint>();
 
         private static FormMain MainForm;
+        public NozzleChanger nozzleChanger;
 
         public bool NeedleAlwaysCalibrated = false;
 
@@ -117,23 +118,84 @@ namespace LitePlacer {
 
 
         public bool Calibrate(double Tolerance) {
-            if (NeedleAlwaysCalibrated)
+            if (NeedleAlwaysCalibrated || MainForm.Cnc.Simulation)
             {
-                for (int i = 0; i <= 3600; i = i + 225)
+/*                for (int i = 0; i <= 3600; i = i + 225)
                 {
                     NeedlePoint Point = new NeedlePoint();
                     Point.A = i / 10.0;
                     Point.X = 0;
                     Point.Y = 0;
                     CalibrationPoints.Add(Point);
-                }
+                }*/
+                NeedlePoint Point = new NeedlePoint();
+                Point.X = -0.22; Point.Y = 0.08; Point.A = 0;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = -0.07; Point.Y = 0.18; Point.A = 22.5;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = 0.05; Point.Y = 0.21; Point.A = 45;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = 0.1; Point.Y = 0.23; Point.A = 67.5;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = 0.18; Point.Y = 0.17; Point.A = 90;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = 0.22; Point.Y = 0.09; Point.A = 112.50;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = 0.23; Point.Y = -0.04; Point.A = 135;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = 0.22; Point.Y = -0.13; Point.A = 157.5;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = 0.23; Point.Y = -0.24; Point.A = 180;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = 0.14; Point.Y = -0.34; Point.A = 202.5;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = -0.02; Point.Y = -0.28; Point.A = 225;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = -0.12; Point.Y = -0.19; Point.A =247.50;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = -0.23; Point.Y = -0.07; Point.A = 270;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = -0.24; Point.Y = -0.01; Point.A = 292.5;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = -0.24; Point.Y = 0.05; Point.A = 315;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = -0.18; Point.Y = 0.10; Point.A = 337.5;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+                Point.X = -0.09; Point.Y = 0.18; Point.A = 360;
+                CalibrationPoints.Add(Point);
+                Point = new NeedlePoint();
+
                 Calibrated = true;
                 return true;
             }
 
             //setup camera
             MainForm.cameraView.UpCameraReset();
-            MainForm.cameraView.SetUpCameraFunctionSet("Needle");
+            if (nozzleChanger.Enabled == false)
+            {
+                MainForm.cameraView.SetUpCameraFunctionSet("Needle");
+            }
+            else
+            {
+                Nozzle nozzle = nozzleChanger.GetLoadedNozzle();
+                if (nozzle != null) { MainForm.cameraView.SetUpCameraFunctionSet(nozzle.NozzleFilter); }
+            }
             MainForm.cameraView.downSettings.FindCircles = true;
 
             // we are already @ upcamera position
@@ -150,6 +212,7 @@ namespace LitePlacer {
             for (int i = 0; i <= 3600; i = i + 225) {
                 NeedlePoint Point = new NeedlePoint();
                 Point.A = i / 10.0;
+                if (Point.A > 360) { Point.A -= 360;  }
 
                 if (!MainForm.Cnc.CNC_A(Point.A)) return false;
                 //detect average of 3 measurements

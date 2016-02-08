@@ -19,7 +19,7 @@ namespace LitePlacer {
         public VideoOverlaySettings downSettings = new VideoOverlaySettings();
         public VideoOverlaySettings upSettings = new VideoOverlaySettings();
 
-        private AForgeFunctionSet upSet, downSet;
+        public AForgeFunctionSet upSet, downSet;
         private BindingList<AForgeFunction> currentUpBinding = new BindingList<AForgeFunction>();
         private BindingList<AForgeFunction> currentDownBinding = new BindingList<AForgeFunction>();
         public PictureBoxClickDelegate upClickDelegate, downClickDelegate;
@@ -420,7 +420,7 @@ namespace LitePlacer {
         private void uNewFilter_button_Click(object sender, EventArgs e) {
             string name = Interaction.InputBox("Specify Name", "New Filter", "Untitled");
             upSet.Add(name);
-            UpCamera_FilterSet.DataSource = new BindingSource { DataSource = downSet.GetNames() };
+            UpCamera_FilterSet.DataSource = new BindingSource { DataSource = upSet.GetNames() };
             upVideoProcessing.SetFunctionsList(name);
             Global.Instance.mainForm.UpdateTapeTypesBinding();
         }
